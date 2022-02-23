@@ -1,0 +1,79 @@
+[
+    {
+        "16": {
+            "state": {
+                "on": false,
+                "bri": 254,
+                "hue": 63606,
+                "sat": 254,
+                "effect": "none",
+                "xy": [
+                    0.6351,
+                    0.281
+                ],
+                "ct": 153,
+                "alert": "select",
+                "colormode": "xy",
+                "mode": "homeautomation",
+                "reachable": true
+            },
+            "swupdate": {
+                "state": "noupdates",
+                "lastinstall": "2022-02-22T14:10:35"
+            },
+            "type": "Extended color light",
+            "name": "Lamp",
+            "modelid": "LCA006",
+            "manufacturername": "Signify Netherlands B.V.",
+            "productname": "Hue color lamp",
+            "capabilities": {
+                "certified": true,
+                "control": {
+                    "mindimlevel": 200,
+                    "maxlumen": 1055,
+                    "colorgamuttype": "C",
+                    "colorgamut": [
+                        [
+                            0.6915,
+                            0.3083
+                        ],
+                        [
+                            0.17,
+                            0.7
+                        ],
+                        [
+                            0.1532,
+                            0.0475
+                        ]
+                    ],
+                    "ct": {
+                        "min": 153,
+                        "max": 500
+                    }
+                },
+                "streaming": {
+                    "renderer": true,
+                    "proxy": true
+                }
+            },
+            "config": {
+                "archetype": "sultanbulb",
+                "function": "mixed",
+                "direction": "omnidirectional",
+                "startup": {
+                    "mode": "safety",
+                    "configured": true
+                }
+            },
+            "uniqueid": "00:17:88:01:0b:a9:3a:96-0b",
+            "swversion": "1.76.11",
+            "swconfigid": "0B4D3445",
+            "productid": "Philips-LCA006-1-A60HECLv1"
+        }
+    },
+    {
+        "success": {
+            "username": "dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB"
+        }
+    }
+]
