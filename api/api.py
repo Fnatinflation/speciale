@@ -66,3 +66,30 @@ def setBrightness():
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(value) + '}')
 
     return r.json()[0]
+
+
+# http://127.0.0.1:5000/getMotionSensorInformation
+@app.route("/getMotionSensorInformation")
+def motionSensorInformation():
+    r = requests.get(
+        url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/sensors/2').json()['state']['presence']
+
+    return str(r)
+
+
+# http://127.0.0.1:5000/getLightSensorInformation
+@app.route("/getLightSensorInformation")
+def lightSensorInformation():
+    r = requests.get(
+        url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/sensors/3').json()['state']['lightlevel']
+
+    return str(r)
+
+
+# http://127.0.0.1:5000/getTemperatureSensorInformation
+@app.route("/getTemperatureSensorInformation")
+def temperatureSensorInformation():
+    r = requests.get(
+        url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/sensors/4').json()['state']['temperature']
+
+    return str(r)

@@ -75,5 +75,120 @@
         "success": {
             "username": "dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB"
         }
+    },
+    {
+        "1": {
+            "config": {
+                "configured": false,
+                "on": true,
+                "sunriseoffset": 30,
+                "sunsetoffset": -30
+            },
+            "manufacturername": "Signify Netherlands B.V.",
+            "modelid": "PHDL00",
+            "name": "Daylight",
+            "state": {
+                "daylight": null,
+                "lastupdated": "none"
+            },
+            "swversion": "1.0",
+            "type": "Daylight"
+        },
+        "2": {
+            "capabilities": {
+                "certified": true,
+                "primary": true
+            },
+            "config": {
+                "alert": "none",
+                "battery": 100,
+                "ledindication": false,
+                "on": true,
+                "pending": [],
+                "reachable": true,
+                "sensitivity": 2,
+                "sensitivitymax": 2,
+                "usertest": false
+            },
+            "manufacturername": "Signify Netherlands B.V.",
+            "modelid": "SML001",
+            "name": "Motion sensor",
+            "productname": "Hue motion sensor",
+            "state": {
+                "lastupdated": "2022-02-23T16:09:27",
+                "presence": false
+            },
+            "swupdate": {
+                "lastinstall": "2022-02-23T16:03:52",
+                "state": "transferring"
+            },
+            "swversion": "6.1.0.18912",
+            "type": "ZLLPresence",
+            "uniqueid": "00:17:88:01:03:28:ea:4b-02-0406"
+        },
+        "3": {
+            "capabilities": {
+                "certified": true,
+                "primary": false
+            },
+            "config": {
+                "alert": "none",
+                "battery": 100,
+                "ledindication": false,
+                "on": true,
+                "pending": [],
+                "reachable": true,
+                "tholddark": 16000,
+                "tholdoffset": 7000,
+                "usertest": false
+            },
+            "manufacturername": "Signify Netherlands B.V.",
+            "modelid": "SML001",
+            "name": "Hue ambient light sensor 1",
+            "productname": "Hue ambient light sensor",
+            "state": {
+                "dark": false,
+                "daylight": false,
+                "lastupdated": "2022-02-23T16:14:17",
+                "lightlevel": 16010
+            },
+            "swupdate": {
+                "lastinstall": "2022-02-23T16:03:52",
+                "state": "transferring"
+            },
+            "swversion": "6.1.0.18912",
+            "type": "ZLLLightLevel",
+            "uniqueid": "00:17:88:01:03:28:ea:4b-02-0400"
+        },
+        "4": {
+            "capabilities": {
+                "certified": true,
+                "primary": false
+            },
+            "config": {
+                "alert": "none",
+                "battery": 100,
+                "ledindication": false,
+                "on": true,
+                "pending": [],
+                "reachable": true,
+                "usertest": false
+            },
+            "manufacturername": "Signify Netherlands B.V.",
+            "modelid": "SML001",
+            "name": "Hue temperature sensor 1",
+            "productname": "Hue temperature sensor",
+            "state": {
+                "lastupdated": "2022-02-23T16:14:34",
+                "temperature": 1684
+            },
+            "swupdate": {
+                "lastinstall": "2022-02-23T16:03:52",
+                "state": "transferring"
+            },
+            "swversion": "6.1.0.18912",
+            "type": "ZLLTemperature",
+            "uniqueid": "00:17:88:01:03:28:ea:4b-02-0402"
+        }
     }
 ]
