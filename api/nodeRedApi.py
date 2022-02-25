@@ -3,7 +3,7 @@ from flask import Flask
 
 # app = Flask(__name__)
 
-id = "d8cdbccce9edf1f1"
+id = "52788067d1716ae6"
 URL = "http://localhost:1880/flow/{}".format(id)
 
 
@@ -13,36 +13,64 @@ def getFlow():
     return data
 
 
-def addWire(flow):
-    print("wire added")
+nodeId = 0
+currX = 0
 
 
-def addDevice(flow):
-    print("device added")
+def addDevice(flow, name, wired):
+    nodeId = len(flow["nodes"])
+    if(nodeId == 0):
+        currX = 100
+    else:
+        currX = flow["nodes"][len(flow["nodes"])-1]["x"]+400
+        # currX = flow["nodes"][len(flow["nodes"])-1]
+
+    if(wired):
+        flow["nodes"][len(flow["nodes"])-1]["wires"] = [[str(nodeId)]]
+
+    newNode = {
+        "id": nodeId,
+        "type": "device",
+        "z": "da8f894483f9f0b2",
+        "name": name,
+        "x": currX,
+        "y": 50,
+        "wires": [],
+        "d": True
+    }
+
+    flow["nodes"].append(newNode)
+    r = requests.put(
+        url=URL, headers={"Content-Type": "application/json"}, json=flow)
+    print(r.content)
 
 
-def addComment(flow):
-    id = len(flow["nodes"])
+commentId = 100
+
+
+def addComment(flow, name, text):
     comment = {
-        "id": id,
+        "id": commentId,
         "type": "comment",
         "z": "da8f894483f9f0b2",
-        "name": "skut",
-        "info": "put",
-        "x": 0,
-        "y": 0,
-        "wires": []
+        "name": name,
+        "info": text,
+        "x": currX-200,
+        "y": 50,
+        "wires": [],
+        "d": True
     }
-    print(comment)
-
-    # flow["nodes"].append(comment)
-    # rPost = requests.put(
-    #     url=URL, headers={"Content-Type": "application/json"}, json=flow)
+    flow["nodes"].append(comment)
+    commentId+1
 
 
 def run():
     flow = getFlow()
-    addComment(flow)
+    addDevice(flow, "Gardin", False)
+    flow = getFlow()
+    addDevice(flow, "Lys", True)
+    flow = getFlow()
+    addComment(flow, "Sync", "Få lyset til at skrue ned når gardinet åbnes")
 
 
 run()
