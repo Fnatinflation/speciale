@@ -1,5 +1,8 @@
 import requests
 from flask import Flask
+import websockets
+import asyncio
+
 
 # app = Flask(__name__)
 
@@ -18,6 +21,7 @@ currX = 0
 
 
 def addDevice(flow, name, wired):
+    global currX
     nodeId = len(flow["nodes"])
     if(nodeId == 0):
         currX = 100
@@ -40,15 +44,13 @@ def addDevice(flow, name, wired):
     }
 
     flow["nodes"].append(newNode)
-    r = requests.put(
-        url=URL, headers={"Content-Type": "application/json"}, json=flow)
-    print(r.content)
 
 
 commentId = 100
 
 
 def addComment(flow, name, text):
+    global currX
     comment = {
         "id": commentId,
         "type": "comment",
@@ -67,13 +69,30 @@ def addComment(flow, name, text):
 def run():
     flow = getFlow()
     addDevice(flow, "Gardin", False)
-    flow = getFlow()
     addDevice(flow, "Lys", True)
-    flow = getFlow()
     addComment(flow, "Sync", "Få lyset til at skrue ned når gardinet åbnes")
 
+    r = requests.put(
+        url=URL, headers={"Content-Type": "application/json"}, json=flow)
 
-run()
+# run()
+
+
+async def echo(websocket):
+    print("skrt")
+    async for message in websocket:
+        await websocket.send(message)
+
+
+async def main():
+    async with websockets.serve(echo, "localhost", 8765):
+        await asyncio.Future()  # run forever
+
+asyncio.run(main())
+
+# venv\Scripts\activate
+# $env:FLASK_APP = "nodeRedApi"
+# python nodeRedApi.py
 
 # @ app.route("/")
 # def hello_world():

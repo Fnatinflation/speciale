@@ -1,0 +1,35 @@
+<script type="text/javascript">
+    RED.nodes.registerType('myTrigger', {
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            deviceId: { value: "" },
+            operator: { value: "" },
+            state: { value: "" },
+            value: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "node-red/light.svg",
+        label: function () {
+            return this.name || "myTrigger";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="myTrigger">
+    <div class="form-row">
+        <label for="node-input-deviceId"><i class="fa fa-tag"></i>Device Id</label>
+        <input type="text" id="node-input-deviceId" placeholder="Device Id">
+        <label for="node-input-state"><i class="fa fa-tag"></i> State</label>
+        <input type="text" id="node-input-state" placeholder="State">
+        <label for="node-operator"><i class="fa fa-tag"></i> Operator</label>
+        <input type="text" id="node-input-operator" placeholder="Operator">
+        <label for="node-value"><i class="fa fa-tag"></i> Value</label>
+        <input type="text" id="node-input-value" placeholder="Value">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="myTrigger">
+    <h3>Trigger</h3>
+</script>
