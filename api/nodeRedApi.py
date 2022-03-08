@@ -1,10 +1,10 @@
 import requests
-from flask import Flask
+from flask import Flask, request
 import websockets
 import asyncio
 
 
-# app = Flask(__name__)
+app = Flask(__name__)
 
 id = "52788067d1716ae6"
 URL = "http://localhost:1880/flow/{}".format(id)
@@ -66,16 +66,35 @@ def addComment(flow, name, text):
     commentId+1
 
 
+def addMyDevice(flow):
+    myDevice = {
+        "id": 69,
+        "type": "myDevice",
+        "z": "da8f894483f9f0b2",
+        "name": "Skrt",
+        "deviceInfo": "hue.com/lol",
+        "deviceId": "19823",
+        "state": [{"hej": "skrt", "br": "asodn"}],
+        "x": 200,
+        "y": 200,
+        "wires": [],
+        "d": False
+    }
+    flow["nodes"].append(myDevice)
+
+
 def run():
     flow = getFlow()
-    addDevice(flow, "Gardin", False)
-    addDevice(flow, "Lys", True)
-    addComment(flow, "Sync", "Få lyset til at skrue ned når gardinet åbnes")
+    # addDevice(flow, "Gardin", False)
+    # addDevice(flow, "Lys", True)
+    # addComment(flow, "Sync", "Få lyset til at skrue ned når gardinet åbnes")
+    addMyDevice(flow)
 
     r = requests.put(
         url=URL, headers={"Content-Type": "application/json"}, json=flow)
 
-# run()
+
+run()
 
 
 async def echo(websocket):
@@ -88,12 +107,16 @@ async def main():
     async with websockets.serve(echo, "localhost", 8765):
         await asyncio.Future()  # run forever
 
-asyncio.run(main())
+# asyncio.run(main())
 
 # venv\Scripts\activate
 # $env:FLASK_APP = "nodeRedApi"
 # python nodeRedApi.py
 
-# @ app.route("/")
-# def hello_world():
-#     return "<p>Hello, World!</p>"
+
+@ app.route("/print", methods=['POST'])
+def printResponse():
+    data = request.get_json()
+    print(data)
+    print("hej")
+    return "Skrt Skrt"
