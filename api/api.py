@@ -93,3 +93,27 @@ def temperatureSensorInformation():
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/sensors/4').json()['state']['temperature']
 
     return str(r)
+
+
+# http://127.0.0.1:5000/getAllSensorInformation
+@app.route("/getAllSensorInformation")
+def allSensorInformation():
+    temp = temperatureSensorInformation()
+    light = lightSensorInformation()
+    presence = motionSensorInformation()
+
+    object = {
+        "temp": temp,
+        "light": light,
+        "presence": presence
+    }
+
+    return object
+
+
+@app.route("/json", methods=["POST"])  # http://127.0.0.1:5000/json
+def json_example():
+    req = request.get_json()
+    print(req)
+
+    return "Received"
