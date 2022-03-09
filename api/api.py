@@ -117,3 +117,13 @@ def json_example():
     print(req)
 
     return "Received"
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True, threaded=False)
+
+# # http://127.0.0.1:5000/getAllSensorInformation
+# @app.route("/getAllSensorInformation")
+# def allSensorInformation():
+
+#     return object
