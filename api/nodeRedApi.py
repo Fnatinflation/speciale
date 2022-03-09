@@ -67,20 +67,45 @@ def addComment(flow, name, text):
 
 
 def addMyDevice(flow):
-    myDevice = {
-        "id": 69,
+    bulb = {
+        "id": 68,
         "type": "myDevice",
         "z": "da8f894483f9f0b2",
-        "name": "Skrt",
+        "name": "Hue Bulb",
         "deviceInfo": "hue.com/lol",
-        "deviceId": "19823",
-        "state": [{"hej": "skrt", "br": "asodn"}],
+        "deviceId": 19823,
+        "state": [{"Brightness": 20}, {"Hue": "#23123"}],
+        "outputs": 3,
+        "outputLabels": [
+            "deviceId",
+            "Brightness",
+            "Hue"
+        ],
         "x": 200,
         "y": 200,
         "wires": [],
         "d": False
     }
-    flow["nodes"].append(myDevice)
+    sensor = {
+        "id": 69,
+        "type": "myDevice",
+        "z": "da8f894483f9f0b2",
+        "name": "Hue Motion Sensor",
+        "deviceInfo": "hue.com/lol",
+        "deviceId": 19824,
+        "state": [{"Presence": True}],
+        "outputs": 2,
+        "outputLabels": [
+            "deviceId",
+            "Presence"
+        ],
+        "x": 400,
+        "y": 200,
+        "wires": [],
+        "d": False
+    }
+    flow["nodes"].append(bulb)
+    flow["nodes"].append(sensor)
 
 
 def run():

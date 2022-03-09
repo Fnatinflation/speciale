@@ -6,10 +6,11 @@
             name: { value: "" },
             deviceInfo: { value: "" },
             deviceId: { value: "" },
-            state: { value: [] }
+            state: { value: [] },
+            outputs: { value: 2 },
         },
+
         inputs: 1,
-        outputs: 1,
         icon: "node-red/light.svg",
         label: function () {
             return this.name || "myDevice";
