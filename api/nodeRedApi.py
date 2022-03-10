@@ -9,6 +9,9 @@ app = Flask(__name__)
 id = "52788067d1716ae6"
 URL = "http://localhost:1880/flow/{}".format(id)
 
+currX = 200
+flow = {}
+
 
 def getFlow():
     rGet = requests.get(url=URL, headers={"Content-Type": "application/json"})
@@ -16,104 +19,81 @@ def getFlow():
     return data
 
 
-nodeId = 0
-currX = 0
-
-
-def addDevice(flow, name, wired):
+def addComment(data):
     global currX
-    nodeId = len(flow["nodes"])
-    if(nodeId == 0):
-        currX = 100
-    else:
-        currX = flow["nodes"][len(flow["nodes"])-1]["x"]+400
-        # currX = flow["nodes"][len(flow["nodes"])-1]
-
-    if(wired):
-        flow["nodes"][len(flow["nodes"])-1]["wires"] = [[str(nodeId)]]
-
-    newNode = {
-        "id": nodeId,
-        "type": "device",
+    global flow
+    comment = {
+        "id": data["id"],
+        "type": "comment",
         "z": "da8f894483f9f0b2",
-        "name": name,
+        "name": data["name"],
+        "info": data["text"],
+        "x": currX,
+        "y": 50
+    }
+    flow["nodes"].append(comment)
+
+    currX = currX+200
+
+
+def addMyDevice(data):
+    global currX
+    global flow
+
+    states = list(data["state"].keys())
+    states.insert(0, "deviceId")
+    device = {
+        "id": data["id"],
+        "type": "myDevice",
+        "z": "da8f894483f9f0b2",
+        "name": data["deviceName"],
+        "deviceInfo": data["deviceInfo"],
+        "deviceId": data["deviceId"],
+        "state": data["state"],
+        "outputs": len(data["state"])+1,
+        "outputLabels": states,
         "x": currX,
         "y": 50,
         "wires": [],
-        "d": True
-    }
-
-    flow["nodes"].append(newNode)
-
-
-commentId = 100
-
-
-def addComment(flow, name, text):
-    global currX
-    comment = {
-        "id": commentId,
-        "type": "comment",
-        "z": "da8f894483f9f0b2",
-        "name": name,
-        "info": text,
-        "x": currX-200,
-        "y": 50,
-        "wires": [],
-        "d": True
-    }
-    flow["nodes"].append(comment)
-    commentId+1
-
-
-def addMyDevice(flow):
-    bulb = {
-        "id": 68,
-        "type": "myDevice",
-        "z": "da8f894483f9f0b2",
-        "name": "Hue Bulb",
-        "deviceInfo": "hue.com/lol",
-        "deviceId": 19823,
-        "state": [{"Brightness": 20}, {"Hue": "#23123"}],
-        "outputs": 3,
-        "outputLabels": [
-            "deviceId",
-            "Brightness",
-            "Hue"
-        ],
-        "x": 200,
-        "y": 200,
-        "wires": [],
         "d": False
     }
-    sensor = {
-        "id": 69,
-        "type": "myDevice",
-        "z": "da8f894483f9f0b2",
-        "name": "Hue Motion Sensor",
-        "deviceInfo": "hue.com/lol",
-        "deviceId": 19824,
-        "state": [{"Presence": True}],
-        "outputs": 2,
-        "outputLabels": [
-            "deviceId",
-            "Presence"
-        ],
-        "x": 400,
-        "y": 200,
-        "wires": [],
-        "d": False
-    }
-    flow["nodes"].append(bulb)
-    flow["nodes"].append(sensor)
+    flow["nodes"].append(device)
+    currX = currX+200
 
 
 def run():
+    global flow
+    currId = 100
     flow = getFlow()
-    # addDevice(flow, "Gardin", False)
-    # addDevice(flow, "Lys", True)
-    # addComment(flow, "Sync", "Få lyset til at skrue ned når gardinet åbnes")
-    addMyDevice(flow)
+
+    bulb = {
+        "deviceName": "Hue Bulb",
+        "deviceInfo": "www.lol.dk/skrt",
+        "deviceId": 1922,
+        "state": {"brightness": 90, "hue": 30},
+        "id": currId
+    }
+    currId = currId+1
+    motion = {
+        "deviceName": "Motion Sensor",
+        "deviceInfo": "www.lol.dk/skrtpah",
+        "deviceId": 1923,
+        "state": {"presence": True},
+        "id": currId
+    }
+    currId = currId+1
+    comment = {
+        "name": "Fix mit lort",
+        "text": "Tænd hue på rød når jeg kommer hjem",
+        "id": currId
+    }
+
+    addMyDevice(bulb)
+
+    addMyDevice(motion)
+
+    addComment(comment)
+    print(flow)
 
     r = requests.put(
         url=URL, headers={"Content-Type": "application/json"}, json=flow)
@@ -122,15 +102,15 @@ def run():
 run()
 
 
-async def echo(websocket):
-    print("skrt")
-    async for message in websocket:
-        await websocket.send(message)
+# async def echo(websocket):
+#     print("skrt")
+#     async for message in websocket:
+#         await websocket.send(message)
 
 
-async def main():
-    async with websockets.serve(echo, "localhost", 8765):
-        await asyncio.Future()  # run forever
+# async def main():
+#     async with websockets.serve(echo, "localhost", 8765):
+#         await asyncio.Future()  # run forever
 
 # asyncio.run(main())
 
@@ -139,9 +119,8 @@ async def main():
 # python nodeRedApi.py
 
 
-@ app.route("/print", methods=['POST'])
-def printResponse():
-    data = request.get_json()
-    print(data)
-    print("hej")
-    return "Skrt Skrt"
+# @ app.route("/feature", methods=['POST'])
+# def printResponse():
+#     data = request.get_json()
+#     print(data)
+#     return "Skrt Skrt"

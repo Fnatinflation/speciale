@@ -15,17 +15,16 @@ module.exports = function (RED) {
             // node.send(msg)
 
             var msgs = []
-            var idMsg = { payload: { "deviceId": node.deviceId } }
+            var idMsg = { payload: { "deviceId": node.deviceId }, topic: "deviceId" }
             msgs.push(idMsg)
 
-            node.state.forEach(element => {
-                var key = Object.keys(element)
-
+            Object.entries(node.state).forEach(([key, value]) => {
                 tempMsg = {
-                    payload: { "state": key[0] }
+                    payload: { "state": key }, topic: "state"
                 }
                 msgs.push(tempMsg)
             });
+
             node.send(msgs)
 
 
