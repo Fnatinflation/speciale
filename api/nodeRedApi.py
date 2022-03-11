@@ -61,66 +61,35 @@ def addMyDevice(data):
     currX = currX+200
 
 
-def run():
+def run(devices, comments):
     global flow
-    currId = 100
+
     flow = getFlow()
 
-    bulb = {
-        "deviceName": "Hue Bulb",
-        "deviceInfo": "www.lol.dk/skrt",
-        "deviceId": 1922,
-        "state": {"brightness": 90, "hue": 30},
-        "id": currId
-    }
-    currId = currId+1
-    motion = {
-        "deviceName": "Motion Sensor",
-        "deviceInfo": "www.lol.dk/skrtpah",
-        "deviceId": 1923,
-        "state": {"presence": True},
-        "id": currId
-    }
-    currId = currId+1
-    comment = {
-        "name": "Fix mit lort",
-        "text": "Tænd hue på rød når jeg kommer hjem",
-        "id": currId
-    }
+    for d in devices:
+        addMyDevice(d)
 
-    addMyDevice(bulb)
-
-    addMyDevice(motion)
-
-    addComment(comment)
-    print(flow)
+    for c in comments:
+        addComment(c)
 
     r = requests.put(
         url=URL, headers={"Content-Type": "application/json"}, json=flow)
 
 
-run()
-
-
-# async def echo(websocket):
-#     print("skrt")
-#     async for message in websocket:
-#         await websocket.send(message)
-
-
-# async def main():
-#     async with websockets.serve(echo, "localhost", 8765):
-#         await asyncio.Future()  # run forever
-
-# asyncio.run(main())
-
 # venv\Scripts\activate
 # $env:FLASK_APP = "nodeRedApi"
+# Flask run
 # python nodeRedApi.py
 
+@ app.route("/receiveFeature", methods=['POST'])
+def receive():
+    data = request.get_json()
+    run(data["devices"], data["comments"])
+    return "Modtaget"
 
-# @ app.route("/feature", methods=['POST'])
-# def printResponse():
-#     data = request.get_json()
-#     print(data)
-#     return "Skrt Skrt"
+
+@ app.route("/sendFeature", methods=['POST'])
+def printResponse():
+    data = request.get_json()
+    print(data)
+    return "Skrt Skrt"

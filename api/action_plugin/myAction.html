@@ -3,6 +3,7 @@
         category: 'speciale',
         color: '#a6bbcf',
         defaults: {
+            name: { value: "" },
             deviceId: { value: "" },
             state: { value: "" },
             value: { value: "" }
@@ -18,10 +19,8 @@
 
 <script type="text/html" data-template-name="myAction">
     <div class="form-row">
-        <!-- <label for="node-input-deviceId"><i class="fa fa-tag"></i>Device Id</label>
-        <input type="text" id="node-input-deviceId" placeholder="Device Id">
-        <label for="node-input-state"><i class="fa fa-tag"></i> State</label>
-        <input type="text" id="node-input-state" placeholder="State"> -->
+        <label for="node-name"><i class="fa fa-tag"></i> Action Name</label>
+        <input type="text" id="node-input-name" placeholder="Action Name">
         <label for="node-value"><i class="fa fa-tag"></i> Value</label>
         <input type="text" id="node-input-value" placeholder="Value">
     </div>

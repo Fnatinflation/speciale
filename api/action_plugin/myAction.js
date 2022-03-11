@@ -33,6 +33,7 @@ module.exports = function (RED) {
                         value: node.value
                     }
                 }
+                msg.topic = "action"
                 node.send(msg)
                 globalContext.set("id", undefined)
                 globalContext.set("state", undefined)
