@@ -1,0 +1,19 @@
+[
+    {
+        "comment": {
+            "name": "Lysfix",
+            "text": "ive fixed your shit skrt"
+        },
+        "trigger": {
+            "deviceId": 1923,
+            "state": "presence",
+            "operator": "==",
+            "value": "true"
+        },
+        "action": {
+            "deviceId": 1922,
+            "state": "hue",
+            "value": "80"
+        }
+    }
+]
