@@ -9,7 +9,9 @@ A Philips Hue lightbulb.
 <summary>Details</summary>
 
 #### Input: 
-Inject signal
+Name | Type | Description|Required
+--- | --- | --- |---|
+inject|node inputs|Activates the node|Required
 #### Outputs:
 
 Name | Type | Description
@@ -116,7 +118,7 @@ Gathers triggers, actions and comments to an object, which can be exported using
 #### Input:
 Name | Type | Description|Required
 --- | --- | --- |---|
-deviceFields|node inputs|Exports need actions and triggers, in order to define a feature to be exported. These can be wired from trigger, action and comment nodes.|An action and a trigger is required, comments are optional.
+actionCommentTrigger|node inputs|Exports need actions and triggers, in order to define a feature to be exported. These can be wired from trigger, action and comment nodes.|An action and a trigger is required, comments are optional.
 
 #### Outputs:
 Name | Type | Description
