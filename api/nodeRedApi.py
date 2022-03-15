@@ -76,20 +76,44 @@ def run(devices, comments):
         url=URL, headers={"Content-Type": "application/json"}, json=flow)
 
 
+bulb = {
+    "id": 22,
+    "deviceName": "Hue Bulb",
+    "deviceId": 22,
+    "deviceInfo": "www.hue.com/lol",
+    "state": {"brightness": 20, "hue": "#45235"}
+}
+motion = {
+    "id": 23,
+    "deviceName": "Hue Sensor",
+    "deviceId": 23,
+    "deviceInfo": "www.hue.com/lol",
+    "state": {"presence": True}
+}
+comment = {
+    "id": 24,
+    "name": "fix mit shit",
+    "text": "det virker ikk"
+}
+
+# run([bulb, motion], [comment])
 # venv\Scripts\activate
 # $env:FLASK_APP = "nodeRedApi"
 # Flask run
+# Or
 # python nodeRedApi.py
+
 
 @ app.route("/receiveFeature", methods=['POST'])
 def receive():
-    data = request.get_json()
+    data = request.json
     run(data["devices"], data["comments"])
-    return "Modtaget"
+    return "Feature received for expert"
 
 
 @ app.route("/sendFeature", methods=['POST'])
 def printResponse():
-    data = request.get_json()
+    data = request.json
     print(data)
-    return "Skrt Skrt"
+    # TODO: Unity
+    return "Feature sent to novice"

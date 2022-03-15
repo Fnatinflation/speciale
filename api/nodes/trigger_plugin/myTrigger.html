@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('myTrigger', {
         category: 'speciale',
-        color: '#a6bbcf',
+        color: '#e83f25',
         defaults: {
             name: { value: "" },
             deviceId: { value: "" },
@@ -12,7 +12,7 @@
         inputs: 1,
         inputLabels: ["device"],
         outputs: 1,
-        icon: "node-red/light.svg",
+        icon: "node-red/trigger.svg",
         label: function () {
             return this.name || "myTrigger";
         }

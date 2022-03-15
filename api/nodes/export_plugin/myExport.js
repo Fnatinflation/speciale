@@ -2,39 +2,76 @@ module.exports = function (RED) {
 
     function MyExportNode(config) {
         RED.nodes.createNode(this, config);
-        this.text = config.text;
+        this.blocks = config.blocks;
 
         var node = this;
         node.on('input', function (msg) {
             var globalContext = this.context().global;
 
 
-            globalContext.set(msg.topic, msg.payload)
+            if (msg.topic === "trigger") {
+                var triggers = globalContext.get("triggers")
+                if (triggers === undefined) {
+                    triggers = []
+                }
+                triggers.push(msg.payload)
+                globalContext.set("triggers", triggers)
+            }
+            if (msg.topic === "action") {
 
-            var trigger = globalContext.get("trigger")
-            var action = globalContext.get("action")
-            var comment = globalContext.get("comment")
+                var actions = globalContext.get("actions")
+                if (actions === undefined) {
+                    actions = []
+                }
+                actions.push(msg.payload)
+                globalContext.set("actions", actions)
+            }
+            if (msg.topic === "comment") {
 
-            console.log(trigger)
-            console.log(action)
-            console.log(comment)
+                var comments = globalContext.get("comments")
+                if (comments === undefined) {
+                    comments = []
+                }
+                comments.push(msg.payload)
+                globalContext.set("comments", comments)
+            }
+
+            triggers = globalContext.get("triggers")
+            actions = globalContext.get("actions")
+            comments = globalContext.get("comments")
 
 
-            if (trigger !== undefined && action !== undefined && comment !== undefined) {
+            if (triggers === undefined) {
+                triggerCount = 0
+            } else {
+                triggerCount = triggers.length
+            }
+            if (actions === undefined) {
+                actionCount = 0
+            } else {
+                actionCount = actions.length
+            }
+            if (comments === undefined) {
+                commentCount = 0
+            } else {
+                commentCount = comments.length
+            }
+            let amountOfNodes = triggerCount + actionCount + commentCount
 
+
+            if (amountOfNodes == node.blocks) {
                 msg.payload = {
 
-                    trigger: trigger.trigger,
-                    action: action.action,
-                    comment: comment.comment,
+                    triggers: triggers,
+                    actions: actions,
+                    comments: comments,
 
                 }
                 node.send(msg)
-                globalContext.set("trigger", undefined)
-                globalContext.set("action", undefined)
-                globalContext.set("comment", undefined)
-
-
+                globalContext.set("triggers", undefined)
+                globalContext.set("actions", undefined)
+                globalContext.set("comments", undefined)
+                amountOfNodes, triggerCount, actionCount, commentCount = 0
             }
         })
     }

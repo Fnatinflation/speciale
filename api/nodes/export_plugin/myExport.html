@@ -1,14 +1,15 @@
 <script type="text/javascript">
     RED.nodes.registerType('myExport', {
         category: 'speciale',
-        color: '#a6bbcf',
+        color: '#60db4d',
         defaults: {
-            name: { value: "" }
+            name: { value: "" },
+            blocks: { value: 0 }
         },
         inputs: 1,
         outputs: 1,
         outputLabels: ["Feature"],
-        icon: "node-red/light.svg",
+        icon: "font-awesome/fa-angle-right",
         label: function () {
             return this.name || "myExport";
         }
@@ -18,7 +19,9 @@
 <script type="text/html" data-template-name="myExport">
     <div class="form-row">
         <label for="node-name"><i class="fa fa-tag"></i> Feature Name</label>
-        <input type="text" id="node-input-name" placeholder="Feature Name">   
+        <input type="text" id="node-input-name" placeholder="Feature Name">  
+        <label for="node-blocks"><i class="fa fa-tag"></i> Blocks</label>
+        <input type="text" id="node-input-blocks" placeholder="No of blocks">    
     </div>
 </script>
 

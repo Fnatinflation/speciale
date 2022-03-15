@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('myComment', {
         category: 'speciale',
-        color: '#a6bbcf',
+        color: '#aba79f',
         defaults: {
             name: { value: "" },
             text: { value: "" }
@@ -9,7 +9,7 @@
         inputs: 1,
         outputs: 1,
         outputLabels: ["Comment"],
-        icon: "node-red/light.svg",
+        icon: "node-red/comment.svg",
         label: function () {
             return this.name || "myComment";
         }
