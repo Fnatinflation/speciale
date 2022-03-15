@@ -19,15 +19,15 @@ def getFlow():
     return data
 
 
-def addComment(data):
+def addMyComment(data):
     global currX
     global flow
     comment = {
         "id": data["id"],
-        "type": "comment",
+        "type": "myComment",
         "z": "da8f894483f9f0b2",
         "name": data["name"],
-        "info": data["text"],
+        "text": data["text"],
         "x": currX,
         "y": 50
     }
@@ -70,7 +70,7 @@ def run(devices, comments):
         addMyDevice(d)
 
     for c in comments:
-        addComment(c)
+        addMyComment(c)
 
     r = requests.put(
         url=URL, headers={"Content-Type": "application/json"}, json=flow)
@@ -92,11 +92,25 @@ motion = {
 }
 comment = {
     "id": 24,
-    "name": "fix mit shit",
-    "text": "det virker ikk"
+    "name": "Open the curtains at 7 p.m. ",
+    "text": "I want my curtains to unfold when I wake up"
+}
+clock = {
+    "id": 25,
+    "deviceName": "Clock",
+    "deviceId": 25,
+    "deviceInfo": "www.hue.com/lol",
+    "state": {"time": "07:00"}
+}
+curtain = {
+    "id": 26,
+    "deviceName": "Curtain",
+    "deviceId": 26,
+    "deviceInfo": "www.curt.com/lol",
+    "state": {"open": 100}
 }
 
-# run([bulb, motion], [comment])
+run([clock, curtain], [comment])
 # venv\Scripts\activate
 # $env:FLASK_APP = "nodeRedApi"
 # Flask run

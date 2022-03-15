@@ -58,6 +58,8 @@ Name | Type | Description
 trigger|json|A json object of the trigger. Triggers can be input to the myExport component.
 
 #### Fields:
+Fields can be accessed by double-clicking nodes.
+
 Field | Type | Description |Required
 --- | --- | --- |---|
 Name|string|Sets the name of the trigger in the Node-Red editor|Optional
@@ -82,6 +84,8 @@ Name | Type | Description
 action|json|A json object of the action. Actions can be input to the myExport component.
 
 #### Fields:
+Fields can be accessed by double-clicking nodes.
+
 Field | Type | Description |Required
 --- | --- | --- |---|
 Name|string|Sets the name of the action in the Node-Red editor|Optional
@@ -104,6 +108,9 @@ Name | Type | Description
 comment|json|A json object of the comment. Comments can be input to the myExport component.
 
 #### Fields:
+Fields can be accessed by double-clicking nodes.
+
+
 Field | Type | Description |Required
 --- | --- | --- |---|
 Comment Name|string|Sets the name of the action in the Node-Red editor. Also used as the title for the comment when exported.|Optional
@@ -126,12 +133,15 @@ Name | Type | Description
 feature|json|A json object of a feature. Features can be input to the http component, in order to send the feature to the novice.
 
 #### Fields:
+Fields can be accessed by double-clicking nodes.
+
+
 Field | Type | Description |Required
 --- | --- | --- |---|
 Name|string|Sets the name of the export in the Node-Red editor|Optional
 </details>
 
 
-
+## Example
 
 
