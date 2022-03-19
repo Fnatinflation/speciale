@@ -135,6 +135,7 @@ def json_example():
     return "Received"
 
 
+# cd api; python api.py
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=False)
 
