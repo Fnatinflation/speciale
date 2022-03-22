@@ -1,5 +1,6 @@
 # venv\Scripts\activate
 from asyncio.windows_events import NULL
+import string
 from flask import Flask
 import requests
 from flask import request
@@ -21,7 +22,21 @@ def off():
     return "Light turned off"
 
 
-@app.route("/getLightInformation")  # http://127.0.0.1:5000/getLightInformation
+@app.route("/setPower")  # http://127.0.0.1:5000/setPower?value=true/false
+def setPower():
+    value = request.args.get('value', default=0, type=(str))
+
+    if(value == NULL):
+        return 'Wrong input'
+
+    r = requests.put(url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state',
+                     data='{"on":' + value + '}')
+
+    return r.json()[0]
+
+
+# http://127.0.0.1:5000/getLightInformation
+@ app.route("/getLightInformation")
 def lightInformation():
     r = requests.get(
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16').json()['state']
@@ -29,7 +44,7 @@ def lightInformation():
     return r
 
 
-@app.route("/setHue")  # http://127.0.0.1:5000/setHue?value=0-65535
+@ app.route("/setHue")  # http://127.0.0.1:5000/setHue?value=0-65535
 def setHue():
     value = request.args.get('value', default=0, type=int)
 
@@ -42,7 +57,7 @@ def setHue():
     return r.json()[0]
 
 
-@app.route("/setCT")  # http://127.0.0.1:5000/setCT?value=153-500
+@ app.route("/setCT")  # http://127.0.0.1:5000/setCT?value=153-500
 def setCT():
     value = request.args.get('value', default=0, type=int)
 
@@ -55,7 +70,8 @@ def setCT():
     return r.json()[0]
 
 
-@app.route("/setBrightness")  # http://127.0.0.1:5000/setBrightness?value=1-254
+# http://127.0.0.1:5000/setBrightness?value=1-254
+@ app.route("/setBrightness")
 def setBrightness():
     value = request.args.get('value', default=0, type=int)
 
@@ -69,7 +85,7 @@ def setBrightness():
 
 
 # http://127.0.0.1:5000/getMotionSensorInformation
-@app.route("/getMotionSensorInformation")
+@ app.route("/getMotionSensorInformation")
 def motionSensorInformation():
     r = requests.get(
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/sensors/2').json()['state']['presence']
@@ -78,7 +94,7 @@ def motionSensorInformation():
 
 
 # http://127.0.0.1:5000/getLightSensorInformation
-@app.route("/getLightSensorInformation")
+@ app.route("/getLightSensorInformation")
 def lightSensorInformation():
     r = requests.get(
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/sensors/3').json()['state']['lightlevel']
@@ -87,7 +103,7 @@ def lightSensorInformation():
 
 
 # http://127.0.0.1:5000/getTemperatureSensorInformation
-@app.route("/getTemperatureSensorInformation")
+@ app.route("/getTemperatureSensorInformation")
 def temperatureSensorInformation():
     r = requests.get(
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/sensors/4').json()['state']['temperature']
@@ -96,7 +112,7 @@ def temperatureSensorInformation():
 
 
 # http://127.0.0.1:5000/getAllSensorInformation
-@app.route("/getAllSensorInformation")
+@ app.route("/getAllSensorInformation")
 def allSensorInformation():
     temp = temperatureSensorInformation()
     light = lightSensorInformation()
@@ -111,7 +127,7 @@ def allSensorInformation():
     return object
 
 
-@app.route("/json", methods=["POST"])  # http://127.0.0.1:5000/json
+@ app.route("/json", methods=["POST"])  # http://127.0.0.1:5000/json
 def json_example():
     req = request.get_json()
     print(req)
@@ -119,6 +135,7 @@ def json_example():
     return "Received"
 
 
+# cd api; python api.py
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=False)
 
