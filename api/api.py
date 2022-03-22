@@ -1,9 +1,11 @@
 # venv\Scripts\activate
 from asyncio.windows_events import NULL
+from json import JSONEncoder
 import string
 from flask import Flask
 import requests
 from flask import request
+import json
 
 app = Flask(__name__)
 
@@ -128,9 +130,23 @@ def allSensorInformation():
 
 
 @ app.route("/json", methods=["POST"])  # http://127.0.0.1:5000/json
-def json_example():
+def json_unity():
     req = request.get_json()
     print(req)
+
+    # r = requests.post("http://192.168.0.121:4444/", req)
+    r = requests.post("http://127.0.0.1:4444/", json.dumps(req))
+
+    return "Received"
+
+
+@ app.route("/data", methods=["POST"])  # http://127.0.0.1:5000/json
+def data_unity():
+    req = request.get_json()
+    print(req)
+
+    r = requests.post(
+        "http://192.168.0.105:5001/receiveFeature", json.dumps(req))
 
     return "Received"
 
@@ -142,5 +158,4 @@ if __name__ == '__main__':
 # # http://127.0.0.1:5000/getAllSensorInformation
 # @app.route("/getAllSensorInformation")
 # def allSensorInformation():
-
 #     return object
