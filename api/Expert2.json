@@ -73,3 +73,20 @@
         ]
     }
 ]
+{
+    "devices": [
+        {
+            "deviceName": "Hue Bulb",
+            "deviceId": "1922",
+        },
+        {
+            "deviceName": "Hue Sensor",
+            "deviceId": "1923",
+        }
+    ],
+    "comments": [
+        {
+            "text": "I want my curtains to unfold when I wake up"
+        }
+    ]
+}

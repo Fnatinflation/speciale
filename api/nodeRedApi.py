@@ -1,8 +1,5 @@
 import requests
-from flask import Flask, request
-import websockets
-import asyncio
-
+from flask import Flask, request, send_file
 
 app = Flask(__name__)
 
@@ -76,41 +73,66 @@ def run(devices, comments):
         url=URL, headers={"Content-Type": "application/json"}, json=flow)
 
 
-bulb = {
-    "id": 22,
-    "deviceName": "Hue Bulb",
-    "deviceId": 22,
-    "deviceInfo": "www.hue.com/lol",
-    "state": {"brightness": 20, "hue": "#45235"}
-}
-motion = {
-    "id": 23,
-    "deviceName": "Hue Sensor",
-    "deviceId": 23,
-    "deviceInfo": "www.hue.com/lol",
-    "state": {"presence": True}
-}
-comment = {
-    "id": 24,
-    "name": "Open the curtains at 7 p.m. ",
-    "text": "I want my curtains to unfold when I wake up"
-}
+def addVideo():
+    flow = getFlow()
+    execVideo = {
+        "id": "100",
+        "type": "exec",
+        "z": "52788067d1716ae6",
+        "command": "start",
+        "addpay": "",
+        "append": "https://www.youtube.com/watch?v=8kCHx3_vu9M&t=54s",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": False,
+        "oldrc": False,
+        "name": "Play",
+        "x": 200,
+        "y": 200,
+        "outputs": 0
+    }
+    flow["nodes"].append(execVideo)
+    r = requests.put(
+        url=URL, headers={"Content-Type": "application/json"}, json=flow)
+
+
+addVideo()
+
 clock = {
     "id": 25,
     "deviceName": "Clock",
-    "deviceId": 25,
+    "deviceId": "25",
     "deviceInfo": "www.hue.com/lol",
     "state": {"time": "07:00"}
 }
 curtain = {
     "id": 26,
     "deviceName": "Curtain",
-    "deviceId": 26,
+    "deviceId": "26",
     "deviceInfo": "www.curt.com/lol",
     "state": {"open": 100}
 }
+clockComment = {
+    "id": 27,
+    "name": "Wake me up",
+    "text": ""
+}
+bulb = {
+    "id": 22,
+    "deviceName": "Hue Bulb",
+    "deviceId": "1922",
+    "deviceInfo": "www.hue.com/lol",
+    "state": {"bri": 20, "hue": "#45235"}
+}
+motion = {
+    "id": 23,
+    "deviceName": "Hue Sensor",
+    "deviceId": "1923",
+    "deviceInfo": "www.hue.com/lol",
+    "state": {"presence": True}
+}
 
-run([clock, curtain], [comment])
+# run([bulb, motion], [clockComment])
 # venv\Scripts\activate
 # $env:FLASK_APP = "nodeRedApi"
 # Flask run
@@ -121,8 +143,15 @@ run([clock, curtain], [comment])
 @ app.route("/receiveFeature", methods=['POST'])
 def receive():
     data = request.json
-    run(data["devices"], data["comments"])
-    return "Feature received for expert"
+
+    comment = {
+        "id": 24,
+        "name": "myComment",
+        "text": data["comment"]
+    }
+
+    run([bulb, motion], [comment])
+    return "Feature received by expert"
 
 
 @ app.route("/sendFeature", methods=['POST'])
@@ -131,3 +160,7 @@ def printResponse():
     print(data)
     # TODO: Unity
     return "Feature sent to novice"
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5001, debug=True, threaded=False)

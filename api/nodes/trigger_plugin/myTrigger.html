@@ -7,7 +7,8 @@
             deviceId: { value: "" },
             operator: { value: "" },
             state: { value: "" },
-            value: { value: "" }
+            value: { value: "" },
+            dataType: { value: "" }
         },
         inputs: 1,
         inputLabels: "deviceFields",
@@ -25,12 +26,25 @@
         <label for="node-name"><i class="fa fa-tag"></i> Trigger Name</label>
         <input type="text" id="node-input-name" placeholder="Trigger Name">
 
+
+        <label for="node-dataType"><i class="fa fa-tag"></i> Data Type</label>
+        <select id="node-input-dataType">
+            <option>int</option>
+            <option>bool</option>
+            <option>string</option>
+            <option>date</option>
+            </select>
+            <br>
+      
+        <br>
         <label for="node-operator"><i class="fa fa-tag"></i> Operator</label>
         <select id="node-input-operator">
             <option>></option>
             <option><</option>
             <option>==</option>
             </select>
+        <br>
+      
         <br>
         <label for="node-value"><i class="fa fa-tag"></i> Value</label>
         <input type="text" id="node-input-value" placeholder="Value">
