@@ -96,7 +96,7 @@ def addVideo():
         url=URL, headers={"Content-Type": "application/json"}, json=flow)
 
 
-addVideo()
+# addVideo()
 
 clock = {
     "id": 25,
@@ -160,6 +160,16 @@ def printResponse():
     print(data)
     # TODO: Unity
     return "Feature sent to novice"
+
+
+@ app.route("/setBrightness")
+def setBrightness():
+    value = 254
+
+    r = requests.put(
+        url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(value) + ',"transitiontime":30}')
+
+    return r.json()[0]
 
 
 if __name__ == '__main__':

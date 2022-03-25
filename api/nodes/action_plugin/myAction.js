@@ -6,12 +6,13 @@ module.exports = function (RED) {
         // this.state = config.state;
         this.value = config.value;
         this.dataType = config.dataType;
+        this.selected = config.selected;
 
         var node = this;
         node.on('input', function (msg) {
 
             var globalContext = this.context().global;
-
+            console.log(node.selected)
 
             globalContext.set(msg.topic, msg.payload)
 
@@ -25,7 +26,8 @@ module.exports = function (RED) {
                     deviceId: id.deviceId,
                     state: state.state,
                     value: node.value,
-                    valueType: node.dataType
+                    valueType: node.dataType,
+                    modes: node.selected
 
                 }
                 msg.topic = "action"
