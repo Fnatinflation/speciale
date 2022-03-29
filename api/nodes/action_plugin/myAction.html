@@ -6,7 +6,9 @@
             name: { value: "" },
             deviceId: { value: "" },
             state: { value: "" },
-            value: { value: "" }
+            value: { value: "" },
+            dataType: { value: "" },
+            selected: { value: [] }
         },
         inputLabels: "deviceFields",
         outputLabels: ["action"],
@@ -15,6 +17,34 @@
         icon: "font-awesome/fa-bolt",
         label: function () {
             return this.name || "myAction";
+        },
+        oneditprepare: function () {
+            var additionals = $(".additionals"); // use same class name as the dynamic DOM elements have
+
+            this.selected.forEach(element => {
+                additionals.each(function (index, el) {
+                    var name = $(el).attr('name'); //get value of data-name from the dynamic element
+                    if (name === element) {
+                        $(el).prop('checked', true);
+                    }
+                })
+            });
+
+
+        },
+        oneditsave: function () {
+            var additionals = $(".additionals"); // use same class name as the dynamic DOM elements have
+            var selected = []; //a temp array
+            additionals.each(function (index, el) {
+                var name = $(el).attr('name'); //get value of data-name from the dynamic element
+                var checked = $(el).is(":checked"); //get checked true/false from the dynamic element
+
+                if (checked) {
+                    selected.push(name); //add object to array;
+                }
+            });
+            this.selected = selected; //update the node prop `dynamicOptions`
+
         }
     });
 </script>
@@ -23,8 +53,25 @@
     <div class="form-row">
         <label for="node-name"><i class="fa fa-tag"></i> Action Name</label>
         <input type="text" id="node-input-name" placeholder="Action Name">
+        <label for="node-dataType"><i class="fa fa-tag"></i> Data Type</label>
+        <select id="node-input-dataType">
+            <option>int</option>
+            <option>bool</option>
+            <option>string</option>
+            <option>date</option>
+            </select>
+            <br>
+            <br>
         <label for="node-value"><i class="fa fa-tag"></i> Value</label>
         <input type="text" id="node-input-value" placeholder="Value">
+
+        <h1>Additional Features</h1>
+        <input class="additionals" type="checkbox" id="node-input-pulsing" name="pulsing" value="pulsing">
+        <label for="node-input-pulsing">Pulsing</label><br>
+        <input class="additionals" type="checkbox" id="node-input-linear" name="linear" value="linear">
+        <label for="node-input-linear">Linear</label><br>
+        <input class="additionals" type="checkbox" id="node-input-blinking" name="blinking" value="blinking">
+        <label for="node-input-blinking">Blinking</label><br>
     </div>
 </script>
 

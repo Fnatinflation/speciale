@@ -7,7 +7,10 @@
             deviceId: { value: "" },
             operator: { value: "" },
             state: { value: "" },
-            value: { value: "" }
+            value: { value: "" },
+            dataType: { value: "" },
+            selected: { value: [] }
+
         },
         inputs: 1,
         inputLabels: "deviceFields",
@@ -16,6 +19,34 @@
         icon: "node-red/trigger.svg",
         label: function () {
             return this.name || "myTrigger";
+        },
+        oneditprepare: function () {
+            var additionals = $(".additionals"); // use same class name as the dynamic DOM elements have
+
+            this.selected.forEach(element => {
+                additionals.each(function (index, el) {
+                    var name = $(el).attr('name'); //get value of data-name from the dynamic element
+                    if (name === element) {
+                        $(el).prop('checked', true);
+                    }
+                })
+            });
+
+
+        },
+        oneditsave: function () {
+            var additionals = $(".additionals"); // use same class name as the dynamic DOM elements have
+            var selected = []; //a temp array
+            additionals.each(function (index, el) {
+                var name = $(el).attr('name'); //get value of data-name from the dynamic element
+                var checked = $(el).is(":checked"); //get checked true/false from the dynamic element
+
+                if (checked) {
+                    selected.push(name); //add object to array;
+                }
+            });
+            this.selected = selected; //update the node prop `dynamicOptions`
+
         }
     });
 </script>
@@ -25,6 +56,17 @@
         <label for="node-name"><i class="fa fa-tag"></i> Trigger Name</label>
         <input type="text" id="node-input-name" placeholder="Trigger Name">
 
+
+        <label for="node-dataType"><i class="fa fa-tag"></i> Data Type</label>
+        <select id="node-input-dataType">
+            <option>int</option>
+            <option>bool</option>
+            <option>string</option>
+            <option>date</option>
+            </select>
+            <br>
+      
+        <br>
         <label for="node-operator"><i class="fa fa-tag"></i> Operator</label>
         <select id="node-input-operator">
             <option>></option>
@@ -32,8 +74,19 @@
             <option>==</option>
             </select>
         <br>
+      
+        <br>
         <label for="node-value"><i class="fa fa-tag"></i> Value</label>
         <input type="text" id="node-input-value" placeholder="Value">
+        <br>
+
+        <h1>Additional Features</h1>
+        <input class="additionals" type="checkbox" id="node-input-one" name="one" value="one">
+        <label for="node-input-one">1</label><br>
+        <input class="additionals" type="checkbox" id="node-input-five" name="five" value="five">
+        <label for="node-input-five">5</label><br>
+        <input class="additionals" type="checkbox" id="node-input-ten" name="ten" value="ten">
+        <label for="node-input-ten">10</label><br>
        
     </div>
 </script>

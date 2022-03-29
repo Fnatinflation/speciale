@@ -1,4 +1,25 @@
 # Documentation
+In this readme, you find the information needed to implement features requested by novices.
+
+This is an example of a feature for rolling up curtains
+![Example Feature](exampleFlow.png)
+
+
+## Useful nodes
+These nodes are usefulneeded to send the implementation to the novice.
+
+### inject
+This node allows you to manually run the implementation using the button.
+
+**IMPORTANT: You must always press _deploy_ in the top right corner before pressing the inject button**
+
+
+### http request
+This node allows you to send the implementation to the novice using http.
+
+### debug
+Allows you to print the JSON object of devices, triggers, actions or exports.
+
 
 ## Devices
 Devices that the user owns.
