@@ -6,6 +6,8 @@ from flask import Flask
 import requests
 from flask import request
 import json
+import threading
+import time
 
 app = Flask(__name__)
 
@@ -152,7 +154,71 @@ def data_unity():
     return "Received"
 
 
-# cd api; python api.py
+@ app.route("/pulse")
+def pulse():
+    stop_threads = False
+
+    thread = threading.Thread(name="pulse", target=pulseLight)
+    thread.start()
+
+    return "now pulsing"
+
+
+def pulseLight():
+    delay = 3
+    global stop_threads
+    stop_threads = True
+    time.sleep(5)
+    stop_threads = False
+
+    while True:
+        if stop_threads:
+            print("pulsed stopped")
+            break
+        r = requests.put(
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + ',"transitiontime":30}')
+        time.sleep(delay)
+        r1 = requests.put(
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + ',"transitiontime":30}')
+        time.sleep(delay)
+        print("pulsed")
+
+
+@ app.route("/blink")
+def blink():
+
+    thread = threading.Thread(name="blink", target=blinkLight)
+    thread.start()
+
+    return "now blinking"
+
+
+def blinkLight():
+    global stop_threads
+    stop_threads = True
+    time.sleep(5)
+    stop_threads = False
+    while True:
+        r = requests.put(
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + '}')
+        time.sleep(1.5)
+        r = requests.put(
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
+        print("blinked")
+        if stop_threads:
+            print("blink stopped")
+            break
+
+
+@ app.route("/normal")
+def normal():
+    global stop_threads
+    stop_threads = True
+    r = requests.put(
+        url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
+    return "normal light"
+
+    # cd api; python api.py
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=False)
 
