@@ -134,8 +134,8 @@ def json_unity():
     req = request.get_json()
     print(req)
 
-    # r = requests.post("http://192.168.0.121:4444/", req)
-    r = requests.post("http://127.0.0.1:4444/", json.dumps(req))
+    r = requests.post("http://192.168.0.121:4444/", json.dumps(req))
+    # r = requests.post("http://127.0.0.1:4444/", json.dumps(req))
 
     return "Received"
 
@@ -143,10 +143,11 @@ def json_unity():
 @ app.route("/data", methods=["POST"])  # http://127.0.0.1:5000/json
 def data_unity():
     req = request.get_json()
-    print(req)
+
+    print(json.dumps(req))
 
     r = requests.post(
-        "http://192.168.0.105:5001/receiveFeature", json.dumps(req))
+        "http://192.168.0.105:5001/receiveFeature", json=req)
 
     return "Received"
 
