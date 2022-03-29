@@ -1,5 +1,7 @@
 import requests
 from flask import Flask, request, send_file
+import threading
+import time
 
 app = Flask(__name__)
 
@@ -58,7 +60,7 @@ def addMyDevice(data):
     currX = currX+200
 
 
-def run(devices, comments):
+def run(devices, comments, videoLink):
     global flow
 
     flow = getFlow()
@@ -69,34 +71,64 @@ def run(devices, comments):
     for c in comments:
         addMyComment(c)
 
+    addVideo(videoLink)
+
     r = requests.put(
         url=URL, headers={"Content-Type": "application/json"}, json=flow)
 
 
-def addVideo():
-    flow = getFlow()
+def addVideo(videoLink):
+    global flow
+
+    playNode = {
+        "id": "3f206de6ad236841",
+        "type": "inject",
+        "z": "52788067d1716ae6",
+        "name": "play",
+        "props": [
+                {
+                    "p": "payload"
+                },
+            {
+                    "p": "topic",
+                    "vt": "str"
+                }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": False,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "100"
+            ]
+        ]
+    }
+
     execVideo = {
         "id": "100",
         "type": "exec",
         "z": "52788067d1716ae6",
         "command": "start",
         "addpay": "",
-        "append": "https://www.youtube.com/watch?v=8kCHx3_vu9M&t=54s",
+        "append": videoLink,
         "useSpawn": "false",
         "timer": "",
         "winHide": False,
         "oldrc": False,
-        "name": "Play",
+        "name": "Video",
         "x": 200,
         "y": 200,
         "outputs": 0
     }
     flow["nodes"].append(execVideo)
-    r = requests.put(
-        url=URL, headers={"Content-Type": "application/json"}, json=flow)
+    flow["nodes"].append(playNode)
 
-
-# addVideo()
 
 clock = {
     "id": 25,
@@ -132,7 +164,7 @@ motion = {
     "state": {"presence": True}
 }
 
-# run([bulb, motion], [clockComment])
+run([], [], "https://www.youtube.com/watch?v=8kCHx3_vu9M&t=54s")
 # venv\Scripts\activate
 # $env:FLASK_APP = "nodeRedApi"
 # Flask run
@@ -162,15 +194,61 @@ def printResponse():
     return "Feature sent to novice"
 
 
-@ app.route("/setBrightness")
-def setBrightness():
-    value = 254
+@ app.route("/pulse")
+def pulse():
+    stop_threads = False
 
-    r = requests.put(
-        url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(value) + ',"transitiontime":30}')
+    thread = threading.Thread(name="pulse", target=pulseLight)
+    thread.start()
 
-    return r.json()[0]
+    return "now pulsing"
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True, threaded=False)
+def pulseLight():
+    delay = 3
+    global stop_threads
+    stop_threads = True
+    time.sleep(5)
+    stop_threads = False
+
+    while True:
+        if stop_threads:
+            print("pulsed stopped")
+            break
+        r = requests.put(
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + ',"transitiontime":30}')
+        time.sleep(delay)
+        r1 = requests.put(
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + ',"transitiontime":30}')
+        time.sleep(delay)
+        print("pulsed")
+
+
+@ app.route("/blink")
+def blink():
+
+    thread = threading.Thread(name="blink", target=blinkLight)
+    thread.start()
+
+    return "now blinking"
+
+
+def blinkLight():
+    global stop_threads
+    stop_threads = True
+    time.sleep(5)
+    stop_threads = False
+    while True:
+        r = requests.put(
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + '}')
+        time.sleep(1)
+        r = requests.put(
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
+        print("blinked")
+        if stop_threads:
+            print("blink stopped")
+            break
+
+
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5001, debug=True, threaded=False)
