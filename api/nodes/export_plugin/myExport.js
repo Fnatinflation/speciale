@@ -18,24 +18,26 @@ module.exports = function (RED) {
 
         var node = this;
         node.on('input', function (msg) {
-            var globalContext = this.context().global;
-            globalContext.set(msg.topic, msg.payload)
+            msg.payload = msg.payload
+            node.send(msg)
+            // var globalContext = this.context().global;
+            // globalContext.set(msg.topic, msg.payload)
 
-            trigger = globalContext.get("trigger")
-            action = globalContext.get("action")
-            comment = globalContext.get("comment")
+            // trigger = globalContext.get("trigger")
+            // action = globalContext.get("action")
+            // comment = globalContext.get("comment")
+            // node.send(msg.payload)
+            // if (trigger !== undefined && action !== undefined && comment !== undefined) {
+            //     msg.payload = {
+            //         trigger,
+            //         action,
+            //         comment,
+            //     }
 
-            if (trigger !== undefined && action !== undefined && comment !== undefined) {
-                msg.payload = {
-                    trigger,
-                    action,
-                    comment,
-                }
 
-
-                node.send(msg)
-                resetGlobalContext(globalContext)
-            }
+            //     node.send(msg)
+            //     resetGlobalContext(globalContext)
+            // }
             // else {
             //     delay(500).then(() => {
             //         trigger = globalContext.get("trigger")

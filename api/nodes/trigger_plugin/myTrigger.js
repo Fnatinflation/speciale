@@ -7,7 +7,7 @@ module.exports = function (RED) {
         this.operator = config.operator;
         this.value = config.value;
         this.dataType = config.dataType;
-        this.selected = config.selected;
+        this.mode = config.mode;
 
 
         var node = this;
@@ -30,7 +30,7 @@ module.exports = function (RED) {
                     operatorType: node.operator,
                     value: node.value,
                     valueType: node.dataType,
-                    modes: node.selected
+                    mode: node.mode
                 }
                 msg.topic = "trigger"
                 if (node.operator === "") {

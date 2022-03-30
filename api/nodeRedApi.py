@@ -164,7 +164,8 @@ motion = {
     "state": {"presence": True}
 }
 
-run([], [], "https://www.youtube.com/watch?v=8kCHx3_vu9M&t=54s")
+run([bulb, motion], [clockComment],
+    "https://www.youtube.com/watch?v=8kCHx3_vu9M&t=54s")
 # venv\Scripts\activate
 # $env:FLASK_APP = "nodeRedApi"
 # Flask run
@@ -192,62 +193,6 @@ def printResponse():
     print(data)
     # TODO: Unity
     return "Feature sent to novice"
-
-
-@ app.route("/pulse")
-def pulse():
-    stop_threads = False
-
-    thread = threading.Thread(name="pulse", target=pulseLight)
-    thread.start()
-
-    return "now pulsing"
-
-
-def pulseLight():
-    delay = 3
-    global stop_threads
-    stop_threads = True
-    time.sleep(5)
-    stop_threads = False
-
-    while True:
-        if stop_threads:
-            print("pulsed stopped")
-            break
-        r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + ',"transitiontime":30}')
-        time.sleep(delay)
-        r1 = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + ',"transitiontime":30}')
-        time.sleep(delay)
-        print("pulsed")
-
-
-@ app.route("/blink")
-def blink():
-
-    thread = threading.Thread(name="blink", target=blinkLight)
-    thread.start()
-
-    return "now blinking"
-
-
-def blinkLight():
-    global stop_threads
-    stop_threads = True
-    time.sleep(5)
-    stop_threads = False
-    while True:
-        r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + '}')
-        time.sleep(1)
-        r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
-        print("blinked")
-        if stop_threads:
-            print("blink stopped")
-            break
 
 
 # if __name__ == '__main__':
