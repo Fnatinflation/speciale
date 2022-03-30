@@ -200,10 +200,10 @@ def blinkLight():
     stop_threads = False
     while True:
         r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + '}')
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + ',"transitiontime":0}')
         time.sleep(1.5)
         r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '"transitiontime":0}')
         print("blinked")
         if stop_threads:
             print("blink stopped")

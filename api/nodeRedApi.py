@@ -77,11 +77,18 @@ def run(devices, comments, videoLink):
         url=URL, headers={"Content-Type": "application/json"}, json=flow)
 
 
+id = 300
+vidX = 200
+
+
 def addVideo(videoLink):
     global flow
+    global id
+    global vidX
 
+    id = id+1
     playNode = {
-        "id": "3f206de6ad236841",
+        "id": id,
         "type": "inject",
         "z": "52788067d1716ae6",
         "name": "play",
@@ -101,17 +108,18 @@ def addVideo(videoLink):
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 130,
-        "y": 160,
+        "x": vidX,
+        "y": 100,
         "wires": [
             [
-                "100"
+                id+1
             ]
         ]
     }
-
+    print("playnode id: " + str(playNode["id"]))
+    id = id + 1
     execVideo = {
-        "id": "100",
+        "id": id,
         "type": "exec",
         "z": "52788067d1716ae6",
         "command": "start",
@@ -122,10 +130,12 @@ def addVideo(videoLink):
         "winHide": False,
         "oldrc": False,
         "name": "Video",
-        "x": 200,
-        "y": 200,
+        "x": vidX+150,
+        "y": 100,
         "outputs": 0
     }
+    vidX = vidX + 350
+    print("execnode id: " + str(execVideo["id"]))
     flow["nodes"].append(execVideo)
     flow["nodes"].append(playNode)
 
@@ -164,8 +174,7 @@ motion = {
     "state": {"presence": True}
 }
 
-run([bulb, motion], [clockComment],
-    "https://www.youtube.com/watch?v=8kCHx3_vu9M&t=54s")
+
 # venv\Scripts\activate
 # $env:FLASK_APP = "nodeRedApi"
 # Flask run
@@ -173,17 +182,23 @@ run([bulb, motion], [clockComment],
 # python nodeRedApi.py
 
 
-@ app.route("/receiveFeature", methods=['POST'])
+@ app.route("/video")
+def videoToNodeRed():
+    run([], [], "https://www.youtube.com/watch?v=8kCHx3_vu9M&t=54s")
+    return "video uploaded"
+
+
+@ app.route("/forExpert")
 def receive():
-    data = request.json
 
     comment = {
         "id": 24,
         "name": "myComment",
-        "text": data["comment"]
+        "text": "skrttt pah"
     }
 
-    run([bulb, motion], [comment])
+    run([bulb, motion], [comment],
+        "https://www.youtube.com/watch?v=8kCHx3_vu9M&t=54s")
     return "Feature received by expert"
 
 
@@ -195,5 +210,5 @@ def printResponse():
     return "Feature sent to novice"
 
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5001, debug=True, threaded=False)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5001, debug=True, threaded=False)
