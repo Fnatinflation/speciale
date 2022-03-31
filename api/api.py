@@ -218,6 +218,7 @@ def blinkLight():
 def normal():
     global stop_threads
     stop_threads = True
+    time.sleep(3)
     r = requests.put(
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
     return "normal light"
