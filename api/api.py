@@ -8,6 +8,8 @@ from flask import request
 import json
 import threading
 import time
+from random import randrange
+
 
 app = Flask(__name__)
 
@@ -170,8 +172,8 @@ def pulseLight():
     stop_threads = True
     time.sleep(5)
     stop_threads = False
-
     while True:
+        rndColor = randrange(50000)
         if stop_threads:
             print("pulsed stopped")
             break
@@ -198,12 +200,14 @@ def blinkLight():
     stop_threads = True
     time.sleep(5)
     stop_threads = False
+
     while True:
         r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + ',"transitiontime":0}')
-        time.sleep(1.5)
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":0,"transitiontime":1}')
+        time.sleep(0.3)
         r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '"transitiontime":0}')
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":254,"transitiontime": 1}')
+        time.sleep(0.3)
         print("blinked")
         if stop_threads:
             print("blink stopped")
