@@ -156,27 +156,32 @@ def data_unity():
     return "Received"
 
 
+globalThreads = []
+
+
 @ app.route("/pulse")
 def pulse():
-    stop_threads = False
+    pulseThread = threading.Thread(target=pulseLight)
+    globalThreads.append({"p": pulseThread})
 
-    thread = threading.Thread(name="pulse", target=pulseLight)
-    thread.start()
+    for t in globalThreads:
+        if t.get("b"):
+            t.get("b").activate = False
+    pulseThread.activate = True
+
+    pulseThread.start()
 
     return "now pulsing"
 
 
 def pulseLight():
     delay = 3
-    global stop_threads
-    stop_threads = True
-    time.sleep(5)
-    stop_threads = False
-    while True:
-        rndColor = randrange(50000)
-        if stop_threads:
-            print("pulsed stopped")
-            break
+    # global stop_threads
+    # stop_threads = True
+    # time.sleep(5)
+    # stop_threads = False
+    t = threading.currentThread()
+    while getattr(t, "activate", True):
         r = requests.put(
             url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + ',"transitiontime":30}')
         time.sleep(delay)
@@ -184,24 +189,30 @@ def pulseLight():
             url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + ',"transitiontime":30}')
         time.sleep(delay)
         print("pulsed")
+    print("pulse stopped")
 
 
 @ app.route("/blink")
 def blink():
 
-    thread = threading.Thread(name="blink", target=blinkLight)
-    thread.start()
+    blinkThread = threading.Thread(target=blinkLight)
+    globalThreads.append({"b": blinkThread})
+
+    for t in globalThreads:
+        if t.get("p"):
+            t.get("p").activate = False
+
+    blinkThread.activate = True
+    blinkThread.start()
 
     return "now blinking"
 
 
 def blinkLight():
-    global stop_threads
-    stop_threads = True
-    time.sleep(5)
-    stop_threads = False
 
-    while True:
+    t = threading.currentThread()
+
+    while getattr(t, "activate", True):
         r = requests.put(
             url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":0,"transitiontime":1}')
         time.sleep(0.3)
@@ -209,19 +220,20 @@ def blinkLight():
             url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":254,"transitiontime": 1}')
         time.sleep(0.3)
         print("blinked")
-        if stop_threads:
-            print("blink stopped")
-            break
+    print("blink stopped")
 
 
 @ app.route("/normal")
 def normal():
-    global stop_threads
-    stop_threads = True
-    time.sleep(3)
+    for t in globalThreads:
+        mT = list(t.items())[0][1]
+        if mT:
+            mT.activate = False
+
     r = requests.put(
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
     return "normal light"
+
 
     # cd api; python api.py
 if __name__ == '__main__':
