@@ -13,7 +13,12 @@ module.exports = function (RED) {
             msg.payload = {
                 action: action,
             }
-            node.send(msg)
+
+            if (node.mode === "") {
+                node.warn("You need to select a configuration for the action customization")
+            } else {
+                node.send(msg)
+            }
         });
 
 

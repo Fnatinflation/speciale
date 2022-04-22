@@ -12,13 +12,16 @@ module.exports = function (RED) {
         node.on('input', function (msg) {
             msg.payload = {
 
-                name: node.name,
                 text: node.text
 
             }
             msg.topic = "comment"
+            if (node.text === "") {
+                node.warn("You need to enter a comment text. Double click the node to enter the text")
+            } else {
+                node.send(msg)
 
-            node.send(msg)
+            }
 
         })
     }

@@ -2,11 +2,11 @@
 In this readme, you find the information needed to implement features requested by novices.
 
 This is an example of a feature for rolling up curtains
-![Example Feature](exampleFlow.png)
+![Example Feature](exampleFlow2.png)
 
 
 ## Useful nodes
-These nodes are usefulneeded to send the implementation to the novice.
+These nodes are needed to send the implementation to the novice.
 
 ### inject
 This node allows you to manually run the implementation using the button.
@@ -14,11 +14,11 @@ This node allows you to manually run the implementation using the button.
 **IMPORTANT: You must always press _deploy_ in the top right corner before pressing the inject button**
 
 
-### http request
+<!-- ### http request
 This node allows you to send the implementation to the novice using http.
 
 ### debug
-Allows you to print the JSON object of devices, triggers, actions or exports.
+Allows you to print the JSON object of devices, triggers, actions or exports. -->
 
 
 ## Devices
@@ -62,6 +62,8 @@ presence|bool|Whether the sensor detects motion.
 
 </details>
 
+## Controls
+
 ### myTrigger
 Defines a trigger, for specifying which condition that triggers an action.
 
@@ -86,6 +88,31 @@ Field | Type | Description |Required
 Name|string|Sets the name of the trigger in the Node-Red editor|Optional
 Operator|operator|Sets the operator of the trigger. Can be: <,> or ==|Required
 Value|A primitive, based on the input field|sets the value that the input device field should be to pass the condition |Required
+</details>
+
+### triggerCustomization
+Defines a customization for a trigger. The triggerCustomizations can be used to provide extra trigger options for the novice to select from. The option to provide can be selected in the fields.
+
+<details>
+<summary>Details</summary>
+
+#### Input:
+Name | Type | Description|Required
+--- | --- | --- |---|
+trigger|node inputs|The trigger that can be customized further with the triggerCustomization.|Required
+
+#### Outputs:
+Name | Type | Description
+--- | --- | --- |
+customized trigger|json|A json object of the customized trigger. Triggers can be input to the myExport component.
+
+#### Fields:
+Fields can be accessed by double-clicking nodes.
+
+Field | Type | Description |Required
+--- | --- | --- |---|
+Name|string|Sets the name of the customization in the Node-Red editor|Optional
+Customization|Customization|The type of customization to allow for the novice.|Required
 </details>
 
 ### myAction
@@ -113,6 +140,31 @@ Name|string|Sets the name of the action in the Node-Red editor|Optional
 Value|A primitive, based on the input field|The value to set the input device value to.|Required
 </details>
 
+### actionCustomization
+Defines a customization for an action. The triggerCustomizations can be used to provide extra action options for the novice to select from. The option to provide can be selected in the fields.
+
+<details>
+<summary>Details</summary>
+
+#### Input:
+Name | Type | Description|Required
+--- | --- | --- |---|
+action|node inputs|The action that can be customized further with an actionCustomization.|Required
+
+#### Outputs:
+Name | Type | Description
+--- | --- | --- |
+customized action|json|A json object of the customized action. Actions can be input to the myExport component.
+
+#### Fields:
+Fields can be accessed by double-clicking nodes.
+
+Field | Type | Description |Required
+--- | --- | --- |---|
+Name|string|Sets the name of the customization in the Node-Red editor|Optional
+Customization|Customization|The type of customization to allow for the novice.|Required
+</details>
+
 ### myComment
 Comments, that can help explain your implementation to technological novices.
 <details>
@@ -138,7 +190,7 @@ Comment Name|string|Sets the name of the action in the Node-Red editor. Also use
 Comment Text|string|Your description of your feature, such that the novice can understand your feature|Required
 </details>
 
-### myExport
+<!-- ### myExport
 Gathers triggers, actions and comments to an object, which can be exported using http.
 <details>
 <summary>Details</summary>
@@ -160,9 +212,5 @@ Fields can be accessed by double-clicking nodes.
 Field | Type | Description |Required
 --- | --- | --- |---|
 Name|string|Sets the name of the export in the Node-Red editor|Optional
-</details>
-
-
-## Example
-
+</details> -->
 

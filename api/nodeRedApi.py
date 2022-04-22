@@ -197,8 +197,8 @@ def receive():
         "text": "skrttt pah"
     }
 
-    run([bulb, motion], [comment],
-        "https://www.youtube.com/watch?v=8kCHx3_vu9M&t=54s")
+    run([curtain, clock], [],
+        "https://www.youtube.com/watch?v=1mZjPGQNnoA")
     return "Feature received by expert"
 
 

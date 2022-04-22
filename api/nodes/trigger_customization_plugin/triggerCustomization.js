@@ -13,7 +13,11 @@ module.exports = function (RED) {
             msg.payload = {
                 trigger: trigger,
             }
-            node.send(msg)
+            if (node.mode === "") {
+                node.warn("You need to select a configuration for the trigger customization")
+            } else {
+                node.send(msg)
+            }
         });
 
 
