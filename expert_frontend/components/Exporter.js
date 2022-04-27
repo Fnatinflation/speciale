@@ -34,7 +34,7 @@ class Exporter extends React.Component {
         return (
             <Col>
                 <div>
-                    <h2>Select Triggers</h2>
+                    <h1>Select Triggers</h1>
                     {triggers.map((t, i) => {
                         return (
                             <Row key={i}>
@@ -50,7 +50,7 @@ class Exporter extends React.Component {
                     })}
                 </div>
                 <div>
-                    <h2>Select Actions</h2>
+                    <h1>Select Actions</h1>
                     {actions.map((a, i) => {
                         return (
                             <Row key={i}>
@@ -65,7 +65,7 @@ class Exporter extends React.Component {
                     })}
                 </div>
                 <div>
-                    <h2>Select Comments</h2>
+                    <h1>Select Comments</h1>
                     {comments.map((c, i) => {
                         return (
                             <Row key={i}>
@@ -79,14 +79,14 @@ class Exporter extends React.Component {
                         )
                     })}
                 </div>
-                <Row>
-                    <Col>
-                        <Button onClick={this.props.onTest}>Test</Button>
-                    </Col>
-                    <Col>
-                        <Button style={{ backgroundColor: "green" }} onClick={() => this.props.onExport(this.state.exports)}>Export</Button>
-                    </Col>
+                <Row style={{ margin: "0", marginBottom: "5px" }}>
+                    <Button onClick={this.props.onTest}>Test</Button>
                 </Row>
+                <Row style={{ margin: "0" }}>
+                    <Button style={{ backgroundColor: "green" }} onClick={() => this.props.onExport(this.state.exports)}>Export</Button>
+                </Row>
+
+
 
             </Col>
         )

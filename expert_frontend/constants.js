@@ -1,3 +1,6 @@
 export const TRIGGER = "trigger"
 export const ACTION = "action"
 export const COMMENT = "comment"
+export const T_COLOR = "#e83f25"
+export const A_COLOR = "#fcb103"
+export const C_COLOR = "#aba79f"

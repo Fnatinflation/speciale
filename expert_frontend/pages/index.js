@@ -11,7 +11,8 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import React, { useId } from 'react';
 import * as consts from 'constants'
-import { ACTION, COMMENT, TRIGGER } from '../constants';
+
+import { ACTION, A_COLOR, COMMENT, C_COLOR, TRIGGER, T_COLOR } from '../constants';
 
 class Home extends React.Component {
   constructor(props) {
@@ -30,10 +31,33 @@ class Home extends React.Component {
     }
 
     this.exportClicked = this.exportClicked.bind(this)
+    this.appendState = this.appendState.bind(this)
+    this.getTabColor = this.getTabColor.bind(this)
+
   }
+
   handleSelect = index => {
     this.setState({ selectedIndex: index });
   };
+
+  appendState(device, state) {
+    let tabs = [...this.state.tabs]
+
+    let i = this.state.selectedIndex
+    console.log(this.state.selectedIndex)
+
+    // Copy of element
+    let tab = { ...tabs[i] }
+
+    // Update code of tab
+    tab.code = tab.code.concat(device.name + "." + state.value);
+
+    // Overwrite tab with updates
+    tabs[i] = tab
+
+    // Set state
+    this.setState({ tabs })
+  }
 
   changeVideo() {
     setTimeout(function () {
@@ -47,7 +71,6 @@ class Home extends React.Component {
   }
 
   onCodeChange(code, i) {
-    console.log(code)
     // Copy of entire list
     let tabs = [...this.state.tabs]
     // Copy of element
@@ -63,19 +86,23 @@ class Home extends React.Component {
     this.setState({ tabs })
   }
 
+  appendToDebug(newText) {
+    this.setState(previousState => ({ debugTexts: [...previousState.debugTexts, newText] }))
+  }
+
   testClicked() {
 
-    this.setState(previousState => ({ debugTexts: [...previousState.debugTexts, "testing ..."] }))
-    if (!this.state.triggerCode.includes("trigger()")) {
-      this.setState({ debugText: [this.state.debugTexts, "Your trigger needs to call trigger()"] })
-    } if (this.state.commentCode === "") {
-      this.setState({ debugText: [this.state.debugTexts, "You need to write a comment to help the novice understand the implementation."] })
-    } if (this.state.actionCode === "") {
-      this.setState({ debugText: [this.state.debugTexts, "You need to provide an action to run after a trigger is called."] })
-    }
-    else {
-      this.setState({ debugText: [this.state.debugTexts, "All good!"] })
-    }
+    this.appendToDebug("testing ...")
+    // if (!this.state.triggerCode.includes("trigger()")) {
+    //   this.setState({ debugText: [this.state.debugTexts, "Your trigger needs to call trigger()"] })
+    // } if (this.state.commentCode === "") {
+    //   this.setState({ debugText: [this.state.debugTexts, "You need to write a comment to help the novice understand the implementation."] })
+    // } if (this.state.actionCode === "") {
+    //   this.setState({ debugText: [this.state.debugTexts, "You need to provide an action to run after a trigger is called."] })
+    // }
+    // else {
+    //   this.setState({ debugText: [this.state.debugTexts, "All good!"] })
+    // }
   }
 
   exportClicked(exports) {
@@ -116,36 +143,46 @@ class Home extends React.Component {
     // Set state
     this.setState({ tabs })
   }
+  getTabColor(type) {
+    if (type === TRIGGER) {
+      return { backgroundColor: T_COLOR, height: "36px" }
+    }
+    if (type === ACTION) {
+      return { backgroundColor: A_COLOR, height: "36px" }
+    } else {
+      return { backgroundColor: C_COLOR, height: "36px" }
+    }
+  }
 
   render() {
     return (
-      <div className="container" >
+      <div>
         <Head>
           <title>Expert IDE</title>
         </Head>
         <main>
-          <Container>
+          <Container fluid style={{ padding: "20px " }}>
             <Row>
-              <Col>
-                <DevicePanel></DevicePanel>
-                <Tabs>
+              <Col lg={7}>
+                <DevicePanel stateClicked={this.appendState}></DevicePanel>
+                <Tabs selectedIndex={this.state.selectedIndex} onSelect={(index) => this.setState({ selectedIndex: index })}>
                   <TabList>
                     {this.state.tabs.map((t, i) => {
                       return (
-                        <Tab onDoubleClick={this.editTab.bind(this, i, t.type)} key={i}>{t.name}</Tab>
+                        <Tab style={this.getTabColor(t.type)} onDoubleClick={this.editTab.bind(this, i, t.type)} key={i}>{t.name}</Tab>
                       )
                     })}
                     <div style={{ float: "right" }}>
-                      <button onClick={this.addTab.bind(this, TRIGGER)}>+T</button>
-                      <button onClick={this.addTab.bind(this, ACTION)}>+A</button>
-                      <button onClick={this.addTab.bind(this, COMMENT)}>+C</button>
+                      <button style={this.getTabColor(TRIGGER)} onClick={this.addTab.bind(this, TRIGGER)}>+T</button>
+                      <button style={this.getTabColor(ACTION)} onClick={this.addTab.bind(this, ACTION)}>+A</button>
+                      <button style={this.getTabColor(COMMENT)} onClick={this.addTab.bind(this, COMMENT)}>+C</button>
                     </div>
 
                   </TabList>
                   {this.state.tabs.map((t, i) => {
                     return (
                       <TabPanel key={i}>
-                        <EditorPanel index={i} code={t.code} setCode={this.onCodeChange.bind(this)}></EditorPanel>
+                        <EditorPanel type={t.type} index={i} code={t.code} setCode={this.onCodeChange.bind(this)}></EditorPanel>
                       </TabPanel>
                     )
                   })}
