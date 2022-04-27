@@ -162,12 +162,14 @@ globalThreads = []
 @ app.route("/pulse")
 def pulse():
     pulseThread = threading.Thread(target=pulseLight)
-    globalThreads.append({"p": pulseThread})
 
     for t in globalThreads:
         if t.get("b"):
             t.get("b").activate = False
+        if t.get("p"):
+            t.get("p").activate = False
     pulseThread.activate = True
+    globalThreads.append({"p": pulseThread})
 
     pulseThread.start()
 
@@ -196,13 +198,16 @@ def pulseLight():
 def blink():
 
     blinkThread = threading.Thread(target=blinkLight)
-    globalThreads.append({"b": blinkThread})
 
     for t in globalThreads:
         if t.get("p"):
             t.get("p").activate = False
+        if t.get("b"):
+            t.get("b").activate = False
 
     blinkThread.activate = True
+    globalThreads.append({"b": blinkThread})
+
     blinkThread.start()
 
     return "now blinking"
@@ -233,7 +238,6 @@ def normal():
     r = requests.put(
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
     return "normal light"
-
 
     # cd api; python api.py
 if __name__ == '__main__':
