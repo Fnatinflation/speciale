@@ -1,0 +1,15 @@
+type: trigger name: trigger
+
+ ___________________________ 
+type: trigger name: asd
+
+ ___________________________ 
+type: action name: action
+
+ ___________________________ 
+type: action name: pah
+
+ ___________________________ 
+type: trigger name: asd
+
+ ___________________________ 

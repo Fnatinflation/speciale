@@ -118,7 +118,7 @@ class Home extends React.Component {
     fetch("http://localhost:8000/export", params)
       .then(response => response.json())
       .then(data => {
-        this.setState({ debugTexts: [this.state.debugTexts, data.response] })
+        this.appendToDebug(data.response)
         this.changeVideo()
       })
   }

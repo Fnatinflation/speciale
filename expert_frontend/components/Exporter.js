@@ -32,63 +32,67 @@ class Exporter extends React.Component {
             }
         });
         return (
-            <Col>
-                <div>
-                    <h1>Select Triggers</h1>
-                    {triggers.map((t, i) => {
-                        return (
-                            <Row key={i}>
-                                <Col lg={1} >
-                                    <input onClick={this.addToExport.bind(this, t)} type="checkbox"></input>
-                                </Col>
-                                <Col>
-                                    <p style={{ marginBottom: "2px" }}>{t.name}</p>
-                                </Col>
-                            </Row>
 
-                        )
-                    })}
-                </div>
-                <div>
-                    <h1>Select Actions</h1>
-                    {actions.map((a, i) => {
-                        return (
-                            <Row key={i}>
-                                <Col lg={1} >
-                                    <input onClick={this.addToExport.bind(this, a)} type="checkbox"></input>
-                                </Col>
-                                <Col>
-                                    <p style={{ marginBottom: "2px" }}>{a.name}</p>
-                                </Col>
-                            </Row>
-                        )
-                    })}
-                </div>
-                <div>
-                    <h1>Select Comments</h1>
-                    {comments.map((c, i) => {
-                        return (
-                            <Row key={i}>
-                                <Col lg={1} >
-                                    <input onClick={this.addToExport.bind(this, c)} type="checkbox"></input>
-                                </Col>
-                                <Col>
-                                    <p style={{ marginBottom: "2px" }}>{c.name}</p>
-                                </Col>
-                            </Row>
-                        )
-                    })}
-                </div>
+            <div>
+                <Col style={{ backgroundColor: "#f5f5f5", height: "200px", display: "block", maxHeight: "200px", overflowX: "hidden", overflowY: "scroll" }}>
+                    <div >
+                        <h1>Select Triggers</h1>
+                        {triggers.map((t, i) => {
+                            return (
+                                <Row key={i}>
+                                    <Col lg={1} >
+                                        <input onClick={this.addToExport.bind(this, t)} type="checkbox"></input>
+                                    </Col>
+                                    <Col>
+                                        <p style={{ marginBottom: "2px" }}>{t.name}</p>
+                                    </Col>
+                                </Row>
+
+                            )
+                        })}
+                    </div>
+                    <div>
+                        <h1>Select Actions</h1>
+                        {actions.map((a, i) => {
+                            return (
+                                <Row key={i}>
+                                    <Col lg={1} >
+                                        <input onClick={this.addToExport.bind(this, a)} type="checkbox"></input>
+                                    </Col>
+                                    <Col>
+                                        <p style={{ marginBottom: "2px" }}>{a.name}</p>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
+                    <div>
+                        <h1>Select Comments</h1>
+                        {comments.map((c, i) => {
+                            return (
+                                <Row key={i}>
+                                    <Col lg={1} >
+                                        <input onClick={this.addToExport.bind(this, c)} type="checkbox"></input>
+                                    </Col>
+                                    <Col>
+                                        <p style={{ marginBottom: "2px" }}>{c.name}</p>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
+                    </div>
+
+                </Col>
                 <Row style={{ margin: "0", marginBottom: "5px" }}>
                     <Button onClick={this.props.onTest}>Test</Button>
                 </Row>
                 <Row style={{ margin: "0" }}>
                     <Button style={{ backgroundColor: "green" }} onClick={() => this.props.onExport(this.state.exports)}>Export</Button>
                 </Row>
+            </div>
 
 
 
-            </Col>
         )
     }
 
