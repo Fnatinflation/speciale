@@ -10,9 +10,22 @@ import Exporter from '../components/Exporter';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import React, { useId } from 'react';
+import styles from '../styles/Home.module.css'
 import * as consts from 'constants'
 
 import { ACTION, A_COLOR, COMMENT, C_COLOR, TRIGGER, T_COLOR } from '../constants';
+import TestPanel from '../components/TestPanel';
+
+let bulb = {
+  name: "HueBulb",
+  states: [{ type: "int", field: "brightness", value: 0 }, { type: "int", field: "hue", value: 0 }],
+  info: "https://developers.meethue.com/develop/hue-api/lights-api/"
+}
+let motion = {
+  name: "MotionSensor",
+  states: [{ type: "bool", field: "presence", value: false }],
+  info: "https://developers.meethue.com/develop/hue-api/5-sensors-api/"
+}
 
 class Home extends React.Component {
   constructor(props) {
@@ -23,6 +36,8 @@ class Home extends React.Component {
       triggerCode: '',
       actionCode: '',
       commentCode: '',
+      testVisible: false,
+      devices: [bulb, motion],
       tabs: [{ type: 'trigger', name: "trigger", code: '' }, { type: 'action', name: "action", code: '' }, { type: 'comment', name: "comment", code: '' }],
       debugTexts: ['Ready ... '],
       currentUrl: "https://www.youtube.com/embed/qHQkQpUodYg",
@@ -33,7 +48,9 @@ class Home extends React.Component {
     this.exportClicked = this.exportClicked.bind(this)
     this.appendState = this.appendState.bind(this)
     this.getTabColor = this.getTabColor.bind(this)
-
+    this.actionClicked = this.actionClicked.bind(this)
+    this.testClosed = this.testClosed.bind(this)
+    this.updateDeviceState = this.updateDeviceState.bind(this)
   }
 
   handleSelect = index => {
@@ -44,13 +61,12 @@ class Home extends React.Component {
     let tabs = [...this.state.tabs]
 
     let i = this.state.selectedIndex
-    console.log(this.state.selectedIndex)
 
     // Copy of element
     let tab = { ...tabs[i] }
 
     // Update code of tab
-    tab.code = tab.code.concat(device.name + "." + state.value);
+    tab.code = tab.code.concat(device.name + "." + state.field);
 
     // Overwrite tab with updates
     tabs[i] = tab
@@ -90,9 +106,50 @@ class Home extends React.Component {
     this.setState(previousState => ({ debugTexts: [...previousState.debugTexts, newText] }))
   }
 
-  testClicked() {
+  actionClicked(action) {
+    let tempCode = "";
+    let code = action.code
+    let startIndex = 0;
+    let endIndex = 0;
+    if (code.includes("HueBulb.brightness = ")) {
+      for (let i = 0; i < code.length; i++) {
+        if (code.charAt(i - 2) + code.charAt(i - 1) + code.charAt(i) + code.charAt(i + 1) === "s = ") {
+          startIndex = i + 2
+        }
+        if (startIndex !== 0) {
+          if (code.charAt(i) === ";") {
+            endIndex = i
+            break;
+          }
+        }
+      }
+      let value = code.substring(startIndex, endIndex)
+      tempCode = code.replace("HueBulb.brightness = " + value, "this.updateDeviceState(" + value + ")")
+    } else {
+      tempCode = code
+    }
 
+    eval(tempCode)
+
+  }
+
+  updateDeviceState(value) {
+    // 1. Make a shallow copy of the items
+    let devices = [...this.state.devices];
+    // 2. Make a shallow copy of the item you want to mutate
+    let device = { ...devices[0] };
+    // 3. Replace the property you're intested in
+    device.states[0].value = value;
+    device.update = Math.floor(Math.random() * 10);
+    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+    devices[0] = device;
+    // 5. Set the state to our new copy
+    this.setState({ devices });
+  }
+
+  testClicked() {
     this.appendToDebug("testing ...")
+    this.setState({ testVisible: true })
     // if (!this.state.triggerCode.includes("trigger()")) {
     //   this.setState({ debugText: [this.state.debugTexts, "Your trigger needs to call trigger()"] })
     // } if (this.state.commentCode === "") {
@@ -105,8 +162,9 @@ class Home extends React.Component {
     // }
   }
 
+
+
   exportClicked(exports) {
-    console.log(exports)
     const params = {
       method: 'POST',
       headers: {
@@ -127,6 +185,7 @@ class Home extends React.Component {
     let name = prompt("Enter name of new " + type)
     this.setState(previousState => ({ tabs: [...previousState.tabs, { type: type, name: name, code: "" }] }))
   }
+
   editTab(i, type) {
     let newName = prompt("Enter new name of " + type)
     // Copy of entire list
@@ -154,6 +213,10 @@ class Home extends React.Component {
     }
   }
 
+  testClosed() {
+    this.setState({ testVisible: false })
+  }
+
   render() {
     return (
       <div>
@@ -162,9 +225,11 @@ class Home extends React.Component {
         </Head>
         <main>
           <Container fluid style={{ padding: "20px " }}>
+            {this.state.testVisible ? <TestPanel onTestClosed={this.testClosed} onActionClick={this.actionClicked} tabs={this.state.tabs} devices={this.state.devices}></TestPanel> : <div></div>}
+
             <Row>
               <Col lg={7}>
-                <DevicePanel stateClicked={this.appendState}></DevicePanel>
+                <DevicePanel devices={this.state.devices} stateClicked={this.appendState}></DevicePanel>
                 <Tabs selectedIndex={this.state.selectedIndex} onSelect={(index) => this.setState({ selectedIndex: index })}>
                   <TabList>
                     {this.state.tabs.map((t, i) => {
