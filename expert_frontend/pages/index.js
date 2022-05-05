@@ -27,6 +27,10 @@ let motion = {
   info: "https://developers.meethue.com/develop/hue-api/5-sensors-api/"
 }
 
+const brightness = "HueBulb.brightness = "
+const hue = "HueBulb.hue = "
+const presence = "MotionSensor.presence = "
+
 class Home extends React.Component {
   constructor(props) {
     super(props)
@@ -111,9 +115,17 @@ class Home extends React.Component {
     let code = action.code
     let startIndex = 0;
     let endIndex = 0;
-    if (code.includes("HueBulb.brightness = ")) {
+
+
+
+    let replacementText = ""
+    if (code.includes(brightness)) { replacementText = brightness }
+    if (code.includes(hue)) { replacementText = hue }
+    if (code.includes(presence)) { replacementText = presence }
+    if (replacementText !== "") {
       for (let i = 0; i < code.length; i++) {
-        if (code.charAt(i - 2) + code.charAt(i - 1) + code.charAt(i) + code.charAt(i + 1) === "s = ") {
+        let lastChars = code.charAt(i - 3) + code.charAt(i - 2) + code.charAt(i - 1) + code.charAt(i) + code.charAt(i + 1)
+        if (lastChars === "ss = " || lastChars === "ue = " || lastChars === "ce = ") {
           startIndex = i + 2
         }
         if (startIndex !== 0) {
@@ -124,22 +136,32 @@ class Home extends React.Component {
         }
       }
       let value = code.substring(startIndex, endIndex)
-      tempCode = code.replace("HueBulb.brightness = " + value, "this.updateDeviceState(" + value + ")")
+      console.log(replacementText + value)
+      tempCode = code.replace(replacementText + value, "this.updateDeviceState(" + value + ", '" + replacementText + "')")
+      console.log(tempCode)
     } else {
       tempCode = code
     }
-
-    eval(tempCode)
+    try {
+      eval(tempCode)
+    } catch (err) {
+      this.appendToDebug(err.message)
+    }
 
   }
 
-  updateDeviceState(value) {
+  updateDeviceState(value, field) {
+    let stateIndex
+    if (field === brightness) {
+      stateIndex = 0
+    } else { stateIndex = 1 }
+
     // 1. Make a shallow copy of the items
     let devices = [...this.state.devices];
     // 2. Make a shallow copy of the item you want to mutate
     let device = { ...devices[0] };
     // 3. Replace the property you're intested in
-    device.states[0].value = value;
+    device.states[stateIndex].value = value;
     device.update = Math.floor(Math.random() * 10);
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
     devices[0] = device;
@@ -150,16 +172,6 @@ class Home extends React.Component {
   testClicked() {
     this.appendToDebug("testing ...")
     this.setState({ testVisible: true })
-    // if (!this.state.triggerCode.includes("trigger()")) {
-    //   this.setState({ debugText: [this.state.debugTexts, "Your trigger needs to call trigger()"] })
-    // } if (this.state.commentCode === "") {
-    //   this.setState({ debugText: [this.state.debugTexts, "You need to write a comment to help the novice understand the implementation."] })
-    // } if (this.state.actionCode === "") {
-    //   this.setState({ debugText: [this.state.debugTexts, "You need to provide an action to run after a trigger is called."] })
-    // }
-    // else {
-    //   this.setState({ debugText: [this.state.debugTexts, "All good!"] })
-    // }
   }
 
 
