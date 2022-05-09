@@ -9,7 +9,7 @@ class Exporter extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            deploys: [{ name: "deploy1", selected: [], export: false }, { name: "deploy2", selected: [], export: false }],
+            deploys: [{ name: "deploy1", selected: [], export: false }],
             selectedIndex: 0
         }
     }
@@ -29,12 +29,17 @@ class Exporter extends React.Component {
 
     }
 
+    addNewDeploy() {
+        let name = prompt("Enter name for new deploy")
+        this.setState({ deploys: [...this.state.deploys, { name:name, selected: [], export: false } ]}) //simple value
+    }
+
     export() {
         let ready = true;
         let triggers = 0;
         let actions = 0;
         let comments = 0;
-        
+
 
         let deploys = this.state.deploys
 
@@ -76,8 +81,8 @@ class Exporter extends React.Component {
                 }
             })
         })
-        let deploySelected = exports.length!==0
-        if(!deploySelected){
+        let deploySelected = exports.length !== 0
+        if (!deploySelected) {
             this.props.appendToDebug("You need to select a deploy for export")
 
         }
@@ -85,7 +90,7 @@ class Exporter extends React.Component {
         if (!enoughCode && deploySelected) {
             this.props.appendToDebug("You need to export at least one trigger, action and comment")
 
-        } else if(ready&&enoughCode && deploySelected) {
+        } else if (ready && enoughCode && deploySelected) {
 
             const params = {
                 method: 'POST',
@@ -122,7 +127,7 @@ class Exporter extends React.Component {
             // console.log(deploy.selected[deleteIndex])
             // deploy.selected.splice(deleteIndex, 1)
             deploy.selected = deploy.selected.filter(function (s) {
-                return s.name!==data.name
+                return s.name !== data.name
             })
         }
         console.log(deploy.selected)
@@ -188,11 +193,15 @@ class Exporter extends React.Component {
                             return (
                                 <Tab key={i}>
                                     {d.name}
-                                    <input type="checkbox" onClick={() => this.setExport(i)}></input>
+                                    <input style={{marginLeft:"5px"} }type="checkbox" onClick={() => this.setExport(i)}></input>
                                 </Tab>
-                            )
-                        })}
 
+                            )
+
+                        })}
+                        <div style={{ float: "right" }}>
+                            <button onClick={() => this.addNewDeploy()}>+D</button>
+                        </div>
                     </TabList>
                     {
                         this.state.deploys.map((d, i) => {
