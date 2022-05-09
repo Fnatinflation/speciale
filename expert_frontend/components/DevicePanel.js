@@ -1,12 +1,14 @@
 import { Col, Row } from "react-bootstrap"
+import { D_COLOR } from "../constants"
+
 export default function DevicePanel(props) {
 
     let devices = props.devices
     return (
-        <Row style={{ backgroundColor: "#f5f5f5", margin: 0, marginBottom: "5px" }}>
+        <Row style={{ margin: 0, marginBottom: "5px" }}>
             {devices.map((d, i) => {
                 return (
-                    <Col key={i} style={{ border: "solid", paddingLeft: "10px", paddingBottom: "10px" }}>
+                    <Col key={i} style={{ backgroundColor: D_COLOR, border: "solid", paddingBottom: "10px", marginRight: i % 2 === 0 ? "50px" : "0px" }}>
                         <Row>
                             <Col>
                                 <h1>{d.name}</h1>

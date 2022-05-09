@@ -7,14 +7,12 @@ import EditorPanel from '../components/EditorPanel';
 import FilePanel from '../components/FilePanel';
 import Debugger from '../components/Debugger';
 import Exporter from '../components/Exporter';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
 import React, { useId } from 'react';
 import styles from '../styles/Home.module.css'
 import * as consts from 'constants'
 
-import { ACTION, A_COLOR, COMMENT, C_COLOR, TRIGGER, T_COLOR } from '../constants';
 import TestPanel from '../components/TestPanel';
+import { ACTION, COMMENT, TRIGGER } from '../constants';
 
 let bulb = {
   name: "HueBulb",
@@ -42,7 +40,8 @@ class Home extends React.Component {
       commentCode: '',
       testVisible: false,
       devices: [bulb, motion],
-      tabs: [{ type: 'trigger', name: "trigger", code: '' }, { type: 'action', name: "action", code: '' }, { type: 'comment', name: "comment", code: '' }],
+      deploys: [{ name: "deploy1", selected: ["myTrigger", "myAction"] }, { name: "deploy2", selected: ["myComment"] }],
+      tabs: [{ type: 'trigger', name: "myTrigger", code: '' }, { type: 'action', name: "myAction", code: '' }, { type: 'comment', name: "myComment", code: '' }],
       debugTexts: ['Ready ... '],
       currentUrl: "https://www.youtube.com/embed/qHQkQpUodYg",
       urlIndex: 0,
@@ -51,15 +50,28 @@ class Home extends React.Component {
 
     this.exportClicked = this.exportClicked.bind(this)
     this.appendState = this.appendState.bind(this)
-    this.getTabColor = this.getTabColor.bind(this)
     this.actionClicked = this.actionClicked.bind(this)
     this.testClosed = this.testClosed.bind(this)
     this.updateDeviceState = this.updateDeviceState.bind(this)
+    this.addTab = this.addTab.bind(this)
+    this.editTab = this.editTab.bind(this)
+    this.onCodeChange = this.onCodeChange.bind(this)
+    this.setSelectedIndex = this.setSelectedIndex.bind(this)
+    // this.onEscapePressed = this.onEscapePressed.bind(this)
   }
+  // componentDidMount() {
+  //   document.addEventListener("keydown", this.onEscapePressed, false);
+  // }
 
-  handleSelect = index => {
-    this.setState({ selectedIndex: index });
-  };
+  // onEscapePressed(event) {
+  //   if (event.key === "Escape") {
+  //     this.setState({ testVisible: false })
+  //   }
+  // }
+
+  setSelectedIndex(index) {
+    this.setState({ selectedIndex: index })
+  }
 
   appendState(device, state) {
     let tabs = [...this.state.tabs]
@@ -113,32 +125,55 @@ class Home extends React.Component {
   actionClicked(action) {
     let tempCode = "";
     let code = action.code
+    let finalCode = action.code
     let startIndex = 0;
     let endIndex = 0;
 
+    let replacementTexts = [];
+    if (code.includes(brightness)) { replacementTexts.push(brightness) }
+    if (code.includes(hue)) { replacementTexts.push(hue) }
+    if (code.includes(presence)) { replacementTexts.push(presence) }
+    if (code.includes("console.log")) { this.getConsoleLogText(code) }
+    if (replacementTexts !== []) {
+      for (let j = 0; j < replacementTexts.length; j++) {
+        // String for uniquely identifying state fields.
+        let text = replacementTexts[j].substring(replacementTexts[j].length - 5)
+        for (let i = 0; i < code.length; i++) {
+          // Get last 5 characters from current index
+          let lastChars = code.charAt(i - 4) + code.charAt(i - 3) + code.charAt(i - 2) + code.charAt(i - 1) + code.charAt(i)
 
+          // Compare with unique identifier
+          if (lastChars === text) {
 
-    let replacementText = ""
-    if (code.includes(brightness)) { replacementText = brightness }
-    if (code.includes(hue)) { replacementText = hue }
-    if (code.includes(presence)) { replacementText = presence }
-    if (replacementText !== "") {
-      for (let i = 0; i < code.length; i++) {
-        let lastChars = code.charAt(i - 3) + code.charAt(i - 2) + code.charAt(i - 1) + code.charAt(i) + code.charAt(i + 1)
-        if (lastChars === "ss = " || lastChars === "ue = " || lastChars === "ce = ") {
-          startIndex = i + 2
-        }
-        if (startIndex !== 0) {
-          if (code.charAt(i) === ";") {
-            endIndex = i
-            break;
+            // Value starts from next char
+            startIndex = i + 1
           }
+          if (startIndex !== 0) {
+
+            // Value should end at next ;
+            if (code.charAt(i) === ";") {
+              endIndex = i
+            }
+          }
+
+          if (startIndex !== 0 && endIndex !== 0) {
+            // if indeces are set, we can get the substring
+            let value = code.substring(startIndex, endIndex)
+            // Replace original string with state update
+            console.log(replacementTexts[j] + value)
+            tempCode = finalCode.replace(replacementTexts[j] + value, "this.updateDeviceState(" + value + ", '" + replacementTexts[j] + "')")
+
+            // Replace code with updated code
+            finalCode = tempCode
+
+            // Reset indeces
+            startIndex = 0
+            endIndex = 0
+          }
+
         }
+
       }
-      let value = code.substring(startIndex, endIndex)
-      console.log(replacementText + value)
-      tempCode = code.replace(replacementText + value, "this.updateDeviceState(" + value + ", '" + replacementText + "')")
-      console.log(tempCode)
     } else {
       tempCode = code
     }
@@ -148,6 +183,23 @@ class Home extends React.Component {
       this.appendToDebug(err.message)
     }
 
+  }
+
+  getConsoleLogText(code) {
+    let startIndex;
+    let endIndex;
+    for (let i = 0; i < code.length; i++) {
+      if (code.charAt(i - 3) + code.charAt(i - 2) + code.charAt(i - 1) + code.charAt(i) === "log(") {
+        startIndex = i + 1
+      }
+      if (startIndex !== 0) {
+        if (code.charAt(i) === ")") {
+          endIndex = i
+
+          this.appendToDebug(code.substring(startIndex, endIndex))
+        }
+      }
+    }
   }
 
   updateDeviceState(value, field) {
@@ -176,26 +228,73 @@ class Home extends React.Component {
 
 
 
-  exportClicked(exports) {
-    const params = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(exports)
-    }
-    fetch("http://localhost:8000/export", params)
-      .then(response => response.json())
-      .then(data => {
-        this.appendToDebug(data.response)
-        this.changeVideo()
-      })
+  exportClicked(deploys) {
+    let exports = []
+    let ready = true
+    let triggers = 0;
+    let actions = 0;
+    let comments = 0;
+
+    console.log(deploys)
+
+    // exports.forEach(e => {
+    //   if (e.type === TRIGGER) {
+    //     triggers++
+
+    //     if (!e.code.includes("trigger()")) {
+    //       this.appendToDebug("Trigger: " + e.name + " needs to call trigger()")
+    //       ready = false
+    //     }
+    //     if (e.code === "") {
+    //       this.appendToDebug("The trigger is empty")
+    //       ready = false
+    //     }
+    //   }
+    //   if (e.type === ACTION) {
+    //     actions++
+
+    //     if (e.code === "") {
+    //       ready = false
+    //       this.appendToDebug("The action is empty")
+    //     }
+    //   }
+    //   if (e.type === COMMENT) {
+    //     comments++
+
+    //     if (e.code === "") {
+    //       ready = false
+    //       this.appendToDebug("The comment is empty")
+    //     }
+    //   }
+    // })
+
+    // if (ready && triggers > 0 && actions > 0 && comments > 0) {
+    //   console.log("readyy")
+    //   const params = {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Accept': 'application/json'
+    //     },
+    //     body: JSON.stringify(exports)
+    //   }
+
+    //   fetch("http://localhost:8000/export", params)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       this.appendToDebug(data.response)
+    //       this.changeVideo()
+    //     })
+    // } else {
+    //   this.appendToDebug("You need to export at least one trigger, action and comment")
+    // }
   }
 
   addTab(type) {
     let name = prompt("Enter name of new " + type)
-    this.setState(previousState => ({ tabs: [...previousState.tabs, { type: type, name: name, code: "" }] }))
+    if (name !== "") {
+      this.setState(previousState => ({ tabs: [...previousState.tabs, { type: type, name: name, code: "" }] }))
+    }
   }
 
   editTab(i, type) {
@@ -214,16 +313,7 @@ class Home extends React.Component {
     // Set state
     this.setState({ tabs })
   }
-  getTabColor(type) {
-    if (type === TRIGGER) {
-      return { backgroundColor: T_COLOR, height: "36px" }
-    }
-    if (type === ACTION) {
-      return { backgroundColor: A_COLOR, height: "36px" }
-    } else {
-      return { backgroundColor: C_COLOR, height: "36px" }
-    }
-  }
+
 
   testClosed() {
     this.setState({ testVisible: false })
@@ -242,28 +332,7 @@ class Home extends React.Component {
             <Row>
               <Col lg={7}>
                 <DevicePanel devices={this.state.devices} stateClicked={this.appendState}></DevicePanel>
-                <Tabs selectedIndex={this.state.selectedIndex} onSelect={(index) => this.setState({ selectedIndex: index })}>
-                  <TabList>
-                    {this.state.tabs.map((t, i) => {
-                      return (
-                        <Tab style={this.getTabColor(t.type)} onDoubleClick={this.editTab.bind(this, i, t.type)} key={i}>{t.name}</Tab>
-                      )
-                    })}
-                    <div style={{ float: "right" }}>
-                      <button style={this.getTabColor(TRIGGER)} onClick={this.addTab.bind(this, TRIGGER)}>+T</button>
-                      <button style={this.getTabColor(ACTION)} onClick={this.addTab.bind(this, ACTION)}>+A</button>
-                      <button style={this.getTabColor(COMMENT)} onClick={this.addTab.bind(this, COMMENT)}>+C</button>
-                    </div>
-
-                  </TabList>
-                  {this.state.tabs.map((t, i) => {
-                    return (
-                      <TabPanel key={i}>
-                        <EditorPanel type={t.type} index={i} code={t.code} setCode={this.onCodeChange.bind(this)}></EditorPanel>
-                      </TabPanel>
-                    )
-                  })}
-                </Tabs>
+                <FilePanel setSelectedIndex={this.setSelectedIndex} onCodeChange={this.onCodeChange} tabs={this.state.tabs} editTab={this.editTab} addTab={this.addTab}></FilePanel>
                 <Debugger debugTexts={this.state.debugTexts} ></Debugger>
               </Col>
               <Col>

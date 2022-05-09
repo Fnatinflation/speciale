@@ -2,16 +2,74 @@ import { Row, Col, Button } from "react-bootstrap"
 import React from "react"
 import { render } from "react-dom"
 import { ACTION, COMMENT, TRIGGER } from "../constants"
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+
 class Exporter extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            exports: []
+            deploys: [{ name: "deploy1", selected: [], export: false }, { name: "deploy2", selected: [], export: false }],
+            selectedIndex: 0
         }
     }
 
-    addToExport(tab) {
-        this.setState(previousState => ({ exports: [...previousState.exports, tab] }))
+    setExport(i) {
+        // 1. Make a shallow copy of the items
+        let deploys = [...this.state.deploys];
+        // 2. Make a shallow copy of the item you want to mutate
+        let deploy = { ...deploys[i] };
+        // 3. Replace the property you're intested in
+        deploy.export = !deploy.export;
+        // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+        deploys[i] = deploy;
+
+        // 5. Set the state to our new copy
+        this.setState({ deploys });
+
+    }
+
+    addToDeploy(i, data) {
+        // Copy of entire list
+        let deploys = [...this.state.deploys]
+        // Copy of element
+        let deploy = { ...deploys[i] }
+        console.log(deploy)
+
+        // Update code of deploy
+        deploy.selected.push(data)
+
+        // Overwrite tab with updates
+        deploys[i] = deploy
+
+        // Set state
+        this.setState({ deploys })
+    }
+
+    generateList(data, deploy) {
+        return (data.map((data, i) => {
+            let checked = false;
+
+
+            for (let j = 0; j < deploy.selected.length; j++) {
+                if (deploy.selected[j].name === data.name) {
+                    checked = true;
+                }
+            }
+            return (
+                <Row key={i}>
+                    <Col lg={1} >
+                        <input defaultChecked={checked ? true : false} onClick={this.addToDeploy.bind(this, i, data)} type="checkbox"></input>
+                    </Col>
+                    <Col>
+                        <p style={{ marginBottom: "2px" }}>{data.name}</p>
+                    </Col>
+                </Row>
+
+            )
+        }))
+
+
     }
 
     render() {
@@ -34,62 +92,51 @@ class Exporter extends React.Component {
         return (
 
             <div>
-                <Col style={{ backgroundColor: "#f5f5f5", height: "200px", display: "block", maxHeight: "200px", overflowX: "hidden", overflowY: "scroll" }}>
-                    <div >
-                        <h1>Select Triggers</h1>
-                        {triggers.map((t, i) => {
+                < Tabs selectedIndex={this.state.selectedIndex} onSelect={(index) => this.setState({ selectedIndex: index })}>
+                    <TabList>
+                        {this.state.deploys.map((d, i) => {
                             return (
-                                <Row key={i}>
-                                    <Col lg={1} >
-                                        <input onClick={this.addToExport.bind(this, t)} type="checkbox"></input>
-                                    </Col>
-                                    <Col>
-                                        <p style={{ marginBottom: "2px" }}>{t.name}</p>
-                                    </Col>
-                                </Row>
+                                <Tab key={i}>
+                                    {d.name}
+                                    <input type="checkbox" onClick={() => this.setExport(i)}></input>
+                                </Tab>
+                            )
+                        })}
 
-                            )
-                        })}
-                    </div>
-                    <div>
-                        <h1>Select Actions</h1>
-                        {actions.map((a, i) => {
+                    </TabList>
+                    {
+                        this.state.deploys.map((d, i) => {
                             return (
-                                <Row key={i}>
-                                    <Col lg={1} >
-                                        <input onClick={this.addToExport.bind(this, a)} type="checkbox"></input>
-                                    </Col>
-                                    <Col>
-                                        <p style={{ marginBottom: "2px" }}>{a.name}</p>
-                                    </Col>
-                                </Row>
-                            )
-                        })}
-                    </div>
-                    <div>
-                        <h1>Select Comments</h1>
-                        {comments.map((c, i) => {
-                            return (
-                                <Row key={i}>
-                                    <Col lg={1} >
-                                        <input onClick={this.addToExport.bind(this, c)} type="checkbox"></input>
-                                    </Col>
-                                    <Col>
-                                        <p style={{ marginBottom: "2px" }}>{c.name}</p>
-                                    </Col>
-                                </Row>
-                            )
-                        })}
-                    </div>
+                                <TabPanel key={i}>
+                                    <Col style={{ backgroundColor: "#f5f5f5", height: "170px", display: "block", maxHeight: "170px", overflowX: "hidden", overflowY: "scroll" }}>
+                                        <div >
+                                            <h1>Select Triggers</h1>
+                                            {this.generateList(triggers, d)}
+                                        </div>
+                                        <div>
+                                            <h1>Select Actions</h1>
+                                            {this.generateList(actions, d)}
+                                        </div>
+                                        <div>
+                                            <h1>Select Comments</h1>
+                                            {this.generateList(comments, d)}
+                                        </div>
 
-                </Col>
-                <Row style={{ margin: "0", marginBottom: "5px" }}>
-                    <Button onClick={this.props.onTest}>Test</Button>
-                </Row>
-                <Row style={{ margin: "0" }}>
-                    <Button style={{ backgroundColor: "green" }} onClick={() => this.props.onExport(this.state.exports)}>Export</Button>
-                </Row>
-            </div>
+                                    </Col>
+                                    <Row style={{ margin: "0", marginBottom: "5px" }}>
+                                        <Button onClick={this.props.onTest}>Test</Button>
+                                    </Row>
+                                    <Row style={{ margin: "0" }}>
+                                        <Button style={{ backgroundColor: "green" }} onClick={() => this.props.onExport(this.state.deploys)}>Export</Button>
+                                    </Row>
+                                </TabPanel>
+                            )
+                        })
+                    }
+                </Tabs >
+
+
+            </div >
 
 
 

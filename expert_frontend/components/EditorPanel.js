@@ -34,7 +34,7 @@ class EditorPanel extends React.Component {
                     style={{
                         fontSize: 12,
                         backgroundColor: "#f5f5f5",
-                        height: "55vh",
+                        height: "58vh",
                         maxWidth: "60vw",
                         fontFamily:
                             "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace"

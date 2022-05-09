@@ -14,14 +14,14 @@ export default function Debugger(props) {
     }, [props.debugTexts]);
 
     return (
-        < div style={{ padding: "10px", marginTop: "5px", height: "16vh", backgroundColor: "grey", overflowY: "scroll" }} >
+        < div style={{ padding: "10px", marginTop: "5px", height: "16vh", backgroundColor: "#151716", overflowY: "scroll" }} >
 
             <div>
                 {
                     props.debugTexts.map((d, i) => {
                         return (
                             <div key={i}>
-                                <p style={{ fontSize: "12px", padding: "0px", margin: "0px" }}>{d}</p>
+                                <p style={{ fontSize: "12px", padding: "0px", margin: "0px", color: "white" }}>{d}</p>
                                 <div ref={messagesEndRef} />
 
                             </div>

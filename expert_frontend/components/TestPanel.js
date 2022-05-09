@@ -8,36 +8,52 @@ export default function TestPanel(props) {
     return (
 
         <div className={styles.testDiv}>
-            <Row>
-                <Col>Test</Col>
-                <Col styles={{ cursor: "pointer" }} onClick={props.onTestClosed}>X</Col>
+            <Row style={{ padding: "5px" }}>
+                <Col style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    fontWeight: "bold"
+
+                }}>Test the implementation</Col>
+                <Col lg={1} style={{
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                }} onClick={props.onTestClosed}>
+                    <p style={{ backgroundColor: "red", color: "white", textAlign: "center", height: "30px", width: "30px", fontWeight: "bold" }}>X</p>
+                </Col>
             </Row>
-            <Row>
+            <Row className={styles.boxRow}>
                 {props.devices && props.devices.map((d, i) => {
                     return (
                         <Col key={i} className={styles.testDevice}>
-                            <p>{d.name}</p>
+                            <p style={{ fontWeight: "bold" }}>{d.name}</p>
                             {d.states.map((s, j) => {
                                 return (
-                                    <p>{s.field} = {s.value.toString()}</p>
+                                    <p key={j}>{s.field} = {s.value.toString()}</p>
                                 )
                             })}
                         </Col>
                     )
                 })}
             </Row>
+            <Row className={styles.boxRow}>
 
-            {props.tabs && props.tabs.map((t, i) => {
-                if (t.type == ACTION) {
-                    return (<Col key={i} className={styles.testAction}>
-                        <p>
-                            {t.name}
-                        </p>
-                        <Button onClick={() => props.onActionClick(t)}>Run</Button>
-                    </Col>)
-                }
+                {props.tabs && props.tabs.map((t, i) => {
+                    if (t.type == ACTION) {
+                        return (<Col key={i} className={styles.testAction}>
+                            <p style={{
+                                fontWeight: "bold"
+                            }}>
+                                {t.name}
+                            </p>
+                            <Button onClick={() => props.onActionClick(t)}>Run</Button>
+                        </Col>)
+                    }
 
-            })}
+                })}
+            </Row>
+
         </div>
     )
 }
