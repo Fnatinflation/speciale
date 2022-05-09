@@ -29,21 +29,111 @@ class Exporter extends React.Component {
 
     }
 
-    addToDeploy(i, data) {
+    export() {
+        let ready = true;
+        let triggers = 0;
+        let actions = 0;
+        let comments = 0;
+        
+
+        let deploys = this.state.deploys
+
+        let exports = deploys.filter(function (d) {
+            return d.export
+        })
+
+        exports.forEach(e => {
+            e.selected.forEach(s => {
+                console.log(s)
+
+                if (s.type === TRIGGER) {
+                    triggers++
+
+                    if (!s.code.includes("trigger()")) {
+                        this.props.appendToDebug("Trigger: " + s.name + " in deploy: " + e.name + " needs to call trigger()")
+                        ready = false
+                    }
+                    if (s.code === "") {
+                        this.props.appendToDebug("The trigger is empty")
+                        ready = false
+                    }
+                }
+                if (s.type === ACTION) {
+                    actions++
+
+                    if (s.code === "") {
+                        ready = false
+                        this.props.appendToDebug("The action is empty")
+                    }
+                }
+                if (s.type === COMMENT) {
+                    comments++
+
+                    if (s.code === "") {
+                        ready = false
+                        this.props.appendToDebug("The comment is empty")
+                    }
+                }
+            })
+        })
+        let deploySelected = exports.length!==0
+        if(!deploySelected){
+            this.props.appendToDebug("You need to select a deploy for export")
+
+        }
+        var enoughCode = triggers > 0 && actions > 0 && comments > 0
+        if (!enoughCode && deploySelected) {
+            this.props.appendToDebug("You need to export at least one trigger, action and comment")
+
+        } else if(ready&&enoughCode && deploySelected) {
+
+            const params = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(exports)
+            }
+            console.log("ready")
+
+            //   fetch("http://localhost:8000/export", params)
+            //     .then(response => response.json())
+            //     .then(data => {
+            //       this.appendToDebug(data.response)
+            //       this.changeVideo()
+            //     })
+        }
+    }
+
+    addToDeploy(i, data, e) {
         // Copy of entire list
         let deploys = [...this.state.deploys]
         // Copy of element
         let deploy = { ...deploys[i] }
-        console.log(deploy)
 
-        // Update code of deploy
-        deploy.selected.push(data)
+        if (e.target.checked) {
+            // Update code of deploy
+            deploy.selected.push(data)
+        } else {
+            // var deleteIndex = deploy.selected.indexOf(data)
+            // console.log(data)
+
+            // console.log(deploy.selected[deleteIndex])
+            // deploy.selected.splice(deleteIndex, 1)
+            deploy.selected = deploy.selected.filter(function (s) {
+                return s.name!==data.name
+            })
+        }
+        console.log(deploy.selected)
+
 
         // Overwrite tab with updates
         deploys[i] = deploy
 
         // Set state
         this.setState({ deploys })
+
     }
 
     generateList(data, deploy) {
@@ -59,7 +149,7 @@ class Exporter extends React.Component {
             return (
                 <Row key={i}>
                     <Col lg={1} >
-                        <input defaultChecked={checked ? true : false} onClick={this.addToDeploy.bind(this, i, data)} type="checkbox"></input>
+                        <input defaultChecked={checked ? true : false} onChange={this.addToDeploy.bind(this, this.state.selectedIndex, data)} type="checkbox"></input>
                     </Col>
                     <Col>
                         <p style={{ marginBottom: "2px" }}>{data.name}</p>
@@ -127,7 +217,7 @@ class Exporter extends React.Component {
                                         <Button onClick={this.props.onTest}>Test</Button>
                                     </Row>
                                     <Row style={{ margin: "0" }}>
-                                        <Button style={{ backgroundColor: "green" }} onClick={() => this.props.onExport(this.state.deploys)}>Export</Button>
+                                        <Button style={{ backgroundColor: "green" }} onClick={() => this.export()}>Export</Button>
                                     </Row>
                                 </TabPanel>
                             )

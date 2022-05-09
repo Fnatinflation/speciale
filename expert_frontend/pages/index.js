@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Row, Col, Container, Button } from 'react-bootstrap';
 import VideoPlayer from '../components/VideoPlayer';
 import DevicePanel from '../components/DevicePanel';
@@ -10,6 +9,8 @@ import Exporter from '../components/Exporter';
 import React, { useId } from 'react';
 import styles from '../styles/Home.module.css'
 import * as consts from 'constants'
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 import TestPanel from '../components/TestPanel';
 import { ACTION, COMMENT, TRIGGER } from '../constants';
@@ -40,7 +41,6 @@ class Home extends React.Component {
       commentCode: '',
       testVisible: false,
       devices: [bulb, motion],
-      deploys: [{ name: "deploy1", selected: ["myTrigger", "myAction"] }, { name: "deploy2", selected: ["myComment"] }],
       tabs: [{ type: 'trigger', name: "myTrigger", code: '' }, { type: 'action', name: "myAction", code: '' }, { type: 'comment', name: "myComment", code: '' }],
       debugTexts: ['Ready ... '],
       currentUrl: "https://www.youtube.com/embed/qHQkQpUodYg",
@@ -48,7 +48,6 @@ class Home extends React.Component {
       urls: ["https://www.youtube.com/embed/qHQkQpUodYg", "https://www.youtube.com/embed/-nt_u4vo-DI", "https://www.youtube.com/embed/kBh1FovENmo"]
     }
 
-    this.exportClicked = this.exportClicked.bind(this)
     this.appendState = this.appendState.bind(this)
     this.actionClicked = this.actionClicked.bind(this)
     this.testClosed = this.testClosed.bind(this)
@@ -226,70 +225,6 @@ class Home extends React.Component {
     this.setState({ testVisible: true })
   }
 
-
-
-  exportClicked(deploys) {
-    let exports = []
-    let ready = true
-    let triggers = 0;
-    let actions = 0;
-    let comments = 0;
-
-    console.log(deploys)
-
-    // exports.forEach(e => {
-    //   if (e.type === TRIGGER) {
-    //     triggers++
-
-    //     if (!e.code.includes("trigger()")) {
-    //       this.appendToDebug("Trigger: " + e.name + " needs to call trigger()")
-    //       ready = false
-    //     }
-    //     if (e.code === "") {
-    //       this.appendToDebug("The trigger is empty")
-    //       ready = false
-    //     }
-    //   }
-    //   if (e.type === ACTION) {
-    //     actions++
-
-    //     if (e.code === "") {
-    //       ready = false
-    //       this.appendToDebug("The action is empty")
-    //     }
-    //   }
-    //   if (e.type === COMMENT) {
-    //     comments++
-
-    //     if (e.code === "") {
-    //       ready = false
-    //       this.appendToDebug("The comment is empty")
-    //     }
-    //   }
-    // })
-
-    // if (ready && triggers > 0 && actions > 0 && comments > 0) {
-    //   console.log("readyy")
-    //   const params = {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'Accept': 'application/json'
-    //     },
-    //     body: JSON.stringify(exports)
-    //   }
-
-    //   fetch("http://localhost:8000/export", params)
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       this.appendToDebug(data.response)
-    //       this.changeVideo()
-    //     })
-    // } else {
-    //   this.appendToDebug("You need to export at least one trigger, action and comment")
-    // }
-  }
-
   addTab(type) {
     let name = prompt("Enter name of new " + type)
     if (name !== "") {
@@ -337,7 +272,7 @@ class Home extends React.Component {
               </Col>
               <Col>
                 <VideoPlayer videoUrl={this.state.currentUrl}></VideoPlayer>
-                <Exporter tabs={this.state.tabs} onExport={this.exportClicked} onTest={this.testClicked.bind(this)}></Exporter>
+                <Exporter appendToDebug={this.appendToDebug.bind(this)} tabs={this.state.tabs} onTest={this.testClicked.bind(this)}></Exporter>
               </Col>
             </Row>
           </Container>
