@@ -1,15 +1,22 @@
-type: trigger name: trigger
-
- ___________________________ 
-type: trigger name: asd
-
- ___________________________ 
-type: action name: action
-
- ___________________________ 
-type: action name: pah
-
- ___________________________ 
-type: trigger name: asd
-
- ___________________________ 
+deploy1
+ ______________________ 
+type: trigger name: myTrigger
+trigger()
+ 
+type: action name: myAction
+HueBulb.brightness = 10;
+ 
+type: comment name: myComment
+asd
+ 
+deploy2
+ ______________________ 
+type: trigger name: myTrigger
+trigger()
+ 
+type: action name: myAction
+HueBulb.brightness = 10;
+ 
+type: comment name: myComment
+asd
+ 

@@ -17,13 +17,20 @@ app.use(express.static(__dirname + '/public'));
 
 
 app.post('/export', jsonParser, function (req, res) {
-    console.log(req.body);
     data = req.body
+    console.log(data)
     data.forEach(e => {
-        fs.appendFile('data.txt', "type: " + e.type + " name: " + e.name + "\n" + e.code + "\n ___________________________ \n", function (err) {
+        fs.appendFile('data.txt', e.name + "\n ______________________ \n", function (err) {
             if (err) return console.log(err);
-            console.log('Wrote to file');
-        });
+        })
+        e.selected.forEach(s => {
+            fs.appendFile('data.txt', "type: " + s.type + " name: " + s.name + "\n" + s.code + "\n \n", function (err) {
+                if (err) return console.log(err);
+                console.log('Wrote to file');
+            });
+        })
+
+
     });
 
 
