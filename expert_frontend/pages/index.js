@@ -272,7 +272,7 @@ class Home extends React.Component {
               </Col>
               <Col>
                 <VideoPlayer videoUrl={this.state.currentUrl}></VideoPlayer>
-                <Exporter appendToDebug={this.appendToDebug.bind(this)} tabs={this.state.tabs} onTest={this.testClicked.bind(this)}></Exporter>
+                <Exporter changeVideo={() => this.changeVideo.bind(this)} appendToDebug={this.appendToDebug.bind(this)} tabs={this.state.tabs} onTest={this.testClicked.bind(this)}></Exporter>
               </Col>
             </Row>
           </Container>

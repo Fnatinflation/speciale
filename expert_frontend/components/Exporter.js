@@ -31,7 +31,7 @@ class Exporter extends React.Component {
 
     addNewDeploy() {
         let name = prompt("Enter name for new deploy")
-        this.setState({ deploys: [...this.state.deploys, { name:name, selected: [], export: false } ]}) //simple value
+        this.setState({ deploys: [...this.state.deploys, { name: name, selected: [], export: false }] }) //simple value
     }
 
     export() {
@@ -46,10 +46,9 @@ class Exporter extends React.Component {
         let exports = deploys.filter(function (d) {
             return d.export
         })
-
+        console.log(exports)
         exports.forEach(e => {
             e.selected.forEach(s => {
-                console.log(s)
 
                 if (s.type === TRIGGER) {
                     triggers++
@@ -91,7 +90,6 @@ class Exporter extends React.Component {
             this.props.appendToDebug("You need to export at least one trigger, action and comment")
 
         } else if (ready && enoughCode && deploySelected) {
-
             const params = {
                 method: 'POST',
                 headers: {
@@ -102,12 +100,12 @@ class Exporter extends React.Component {
             }
             console.log("ready")
 
-            //   fetch("http://localhost:8000/export", params)
-            //     .then(response => response.json())
-            //     .then(data => {
-            //       this.appendToDebug(data.response)
-            //       this.changeVideo()
-            //     })
+            fetch("http://localhost:8000/export", params)
+                .then(response => response.json())
+                .then(data => {
+                    this.props.appendToDebug(data.response)
+                    this.props.changeVideo()
+                })
         }
     }
 
@@ -193,14 +191,14 @@ class Exporter extends React.Component {
                             return (
                                 <Tab key={i}>
                                     {d.name}
-                                    <input style={{marginLeft:"5px"} }type="checkbox" onClick={() => this.setExport(i)}></input>
+                                    <input style={{ marginLeft: "5px" }} type="checkbox" onClick={() => this.setExport(i)}></input>
                                 </Tab>
 
                             )
 
                         })}
                         <div style={{ float: "right" }}>
-                            <button onClick={() => this.addNewDeploy()}>+D</button>
+                            <button style={{ height: "36px" }} onClick={() => this.addNewDeploy()}>+D</button>
                         </div>
                     </TabList>
                     {
