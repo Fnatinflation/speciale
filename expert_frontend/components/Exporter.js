@@ -46,8 +46,18 @@ class Exporter extends React.Component {
         let exports = deploys.filter(function (d) {
             return d.export
         })
-        console.log(exports)
+
+
+
         exports.forEach(e => {
+            e.selected.forEach((selection, index) => {
+                this.props.tabs.forEach(t => {
+                    if (selection === t.name || selection.name && selection.name === t.name) {
+                        e.selected[index] = t
+                    }
+                })
+            })
+
             e.selected.forEach(s => {
 
                 if (s.type === TRIGGER) {
@@ -88,7 +98,6 @@ class Exporter extends React.Component {
         var enoughCode = triggers > 0 && actions > 0 && comments > 0
         if (!enoughCode && deploySelected) {
             this.props.appendToDebug("You need to export at least one trigger, action and comment")
-
         } else if (ready && enoughCode && deploySelected) {
             const params = {
                 method: 'POST',
@@ -98,13 +107,16 @@ class Exporter extends React.Component {
                 },
                 body: JSON.stringify(exports)
             }
+
+
             console.log("ready")
 
             fetch("http://localhost:8000/export", params)
                 .then(response => response.json())
                 .then(data => {
-                    this.props.appendToDebug(data.response)
                     this.props.changeVideo()
+
+                    this.props.appendToDebug(data.response)
                 })
         }
     }
@@ -117,15 +129,11 @@ class Exporter extends React.Component {
 
         if (e.target.checked) {
             // Update code of deploy
-            deploy.selected.push(data)
+            deploy.selected.push(data.name)
         } else {
-            // var deleteIndex = deploy.selected.indexOf(data)
-            // console.log(data)
 
-            // console.log(deploy.selected[deleteIndex])
-            // deploy.selected.splice(deleteIndex, 1)
             deploy.selected = deploy.selected.filter(function (s) {
-                return s.name !== data.name
+                return s !== data.name
             })
         }
         console.log(deploy.selected)

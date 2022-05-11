@@ -1,4 +1,3 @@
-
 export default function VideoPlayer(props) {
     return (
         <div className="video-responsive">
@@ -7,7 +6,7 @@ export default function VideoPlayer(props) {
                 height="400"
                 src={props.videoUrl}
                 title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             ></iframe>
         </div>
     )

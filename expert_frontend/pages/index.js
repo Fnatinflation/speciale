@@ -43,9 +43,9 @@ class Home extends React.Component {
       devices: [bulb, motion],
       tabs: [{ type: 'trigger', name: "myTrigger", code: '' }, { type: 'action', name: "myAction", code: '' }, { type: 'comment', name: "myComment", code: '' }],
       debugTexts: ['Ready ... '],
-      currentUrl: "https://www.youtube.com/embed/qHQkQpUodYg",
+      currentUrl: "https://www.youtube.com/embed/aIQ-etkDXKc",
       urlIndex: 0,
-      urls: ["https://www.youtube.com/embed/qHQkQpUodYg", "https://www.youtube.com/embed/-nt_u4vo-DI", "https://www.youtube.com/embed/kBh1FovENmo"]
+      urls: ["https://www.youtube.com/embed/aIQ-etkDXKc", "https://www.youtube.com/embed/aW1Scl9ixG8"]
     }
 
     this.appendState = this.appendState.bind(this)
@@ -56,6 +56,7 @@ class Home extends React.Component {
     this.editTab = this.editTab.bind(this)
     this.onCodeChange = this.onCodeChange.bind(this)
     this.setSelectedIndex = this.setSelectedIndex.bind(this)
+    this.changeVideo = this.changeVideo.bind(this)
     // this.onEscapePressed = this.onEscapePressed.bind(this)
   }
   // componentDidMount() {
@@ -91,6 +92,7 @@ class Home extends React.Component {
   }
 
   changeVideo() {
+    console.log("changing video")
     setTimeout(function () {
       let index = this.state.urlIndex;
       index++;
@@ -272,7 +274,7 @@ class Home extends React.Component {
               </Col>
               <Col>
                 <VideoPlayer videoUrl={this.state.currentUrl}></VideoPlayer>
-                <Exporter changeVideo={() => this.changeVideo.bind(this)} appendToDebug={this.appendToDebug.bind(this)} tabs={this.state.tabs} onTest={this.testClicked.bind(this)}></Exporter>
+                <Exporter changeVideo={this.changeVideo} appendToDebug={this.appendToDebug.bind(this)} tabs={this.state.tabs} onTest={this.testClicked.bind(this)}></Exporter>
               </Col>
             </Row>
           </Container>
