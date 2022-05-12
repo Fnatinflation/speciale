@@ -1,7 +1,7 @@
 # Expert IDE
 In this IDE you can implement features requested by novices.
 
-<img src="public/fullUI.png" alt="drawing" width="1000"/>
+<img src="public/fullUi.png" alt="drawing" width="1000"/>
 
 ## Device Panel
 The device panel shows the devices the novice wants you to program, and their corresponding fields.
