@@ -169,8 +169,23 @@ class Exporter extends React.Component {
 
             )
         }))
+    }
 
+    editDeployTab(i) {
+        let newName = prompt("Enter new name of deploy")
+        // Copy of entire list
+        let deploys = [...this.state.deploys]
+        // Copy of element
+        let deploy = { ...deploys[i] }
 
+        // Update code of tab
+        deploy.name = newName;
+
+        // Overwrite tab with updates
+        deploys[i] = deploy
+
+        // Set state
+        this.setState({ deploys })
     }
 
     render() {
@@ -197,7 +212,7 @@ class Exporter extends React.Component {
                     <TabList>
                         {this.state.deploys.map((d, i) => {
                             return (
-                                <Tab key={i}>
+                                <Tab key={i} onDoubleClick={() => this.editDeployTab(i)}>
                                     {d.name}
                                     <input style={{ marginLeft: "5px" }} type="checkbox" onClick={() => this.setExport(i)}></input>
                                 </Tab>

@@ -15,16 +15,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import TestPanel from '../components/TestPanel';
 import { ACTION, COMMENT, TRIGGER } from '../constants';
 
-let bulb = {
-  name: "HueBulb",
-  states: [{ type: "int", field: "brightness", value: 0 }, { type: "int", field: "hue", value: 0 }],
-  info: "https://developers.meethue.com/develop/hue-api/lights-api/"
-}
-let motion = {
-  name: "MotionSensor",
-  states: [{ type: "bool", field: "presence", value: false }],
-  info: "https://developers.meethue.com/develop/hue-api/5-sensors-api/"
-}
+import { COFFEE, CURTAIN, BULB, MOTION } from '../constants';
+
 
 const brightness = "HueBulb.brightness = "
 const hue = "HueBulb.hue = "
@@ -40,7 +32,7 @@ class Home extends React.Component {
       actionCode: '',
       commentCode: '',
       testVisible: false,
-      devices: [bulb, motion],
+      devices: [BULB, MOTION],
       tabs: [{ type: 'trigger', name: "myTrigger", code: '' }, { type: 'action', name: "myAction", code: '' }, { type: 'comment', name: "myComment", code: '' }],
       debugTexts: ['Ready ... '],
       currentUrl: "https://www.youtube.com/embed/aIQ-etkDXKc",
