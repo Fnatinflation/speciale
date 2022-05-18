@@ -50,6 +50,14 @@ def lightInformation():
     return r
 
 
+@ app.route("/setEffect")  # http://127.0.0.1:5000/setEffect
+def setEffect():
+    r = requests.put(
+        url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"effect":"colorloop"}')
+
+    return r.json()[0]
+
+
 @ app.route("/setHue")  # http://127.0.0.1:5000/setHue?value=0-65535
 def setHue():
     value = request.args.get('value', default=0, type=int)
