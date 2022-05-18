@@ -141,13 +141,24 @@ def allSensorInformation():
     return object
 
 
+@ app.route("/testdata", methods=["POST"])  # http://127.0.0.1:5000/testdata
+def test_data():
+    req = request.get_json()
+    print(req)
+
+    # r = requests.post("http://192.168.0.121:4444/", json.dumps(req))
+    # r = requests.post("http://127.0.0.1:4444/", json.dumps(req))
+
+    return "Received"
+
+
 @ app.route("/json", methods=["POST"])  # http://127.0.0.1:5000/json
 def json_unity():
     req = request.get_json()
     print(req)
 
-    r = requests.post("http://192.168.0.121:4444/", json.dumps(req))
-    # r = requests.post("http://127.0.0.1:4444/", json.dumps(req))
+    r = requests.post("http://192.168.0.123:4444/test", json.dumps(req))
+    # r = requests.post("http://127.0.0.1:4444/test", json.dumps(req))
 
     return "Received"
 
@@ -246,6 +257,7 @@ def normal():
     r = requests.put(
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
     return "normal light"
+
 
     # cd api; python api.py
 if __name__ == '__main__':
