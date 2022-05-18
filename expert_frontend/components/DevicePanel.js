@@ -1,22 +1,30 @@
 import { Col, Row } from "react-bootstrap"
-export default function DevicePanel() {
-    const bulb = {
-        name: "HueBulb",
-        states: [{ type: "int", value: "brightness" }, { type: "int", value: "hue" }]
-    }
-    const motion = {
-        name: "MotionSensor",
-        states: [{ type: "bool", value: "presence" }]
-    }
-    let devices = [bulb, motion]
+import { D_COLOR } from "../constants"
+
+export default function DevicePanel(props) {
+
+    let devices = props.devices
     return (
-        <Row>
+        <Row style={{ margin: 0, marginBottom: "5px" }}>
             {devices.map((d, i) => {
                 return (
-                    <Col key={i} style={{ border: "solid" }}>
-                        <h1>{d.name}</h1>
+                    <Col key={i} style={{ backgroundColor: D_COLOR, border: "solid", paddingBottom: "10px", marginRight: i % 2 === 0 ? "50px" : "0px" }}>
+                        <Row>
+                            <Col>
+                                <h1>{d.name}</h1>
+                            </Col>
+                            <Col>
+                                <a style={{ textDecoration: "none", color: "black", float: "right" }} href={d.info} target="_blank">(i)</a>
+                            </Col>
+                        </Row>
+
+
                         {d.states.map((s, j) => {
-                            return (<p key={j}>{s.type + " " + s.value}</p>)
+                            return (
+                                <div key={j}>
+                                    <p style={{ display: "inline-block", margin: "0" }} >{s.type + " "}</p> <p onClick={() => props.stateClicked(d, s)} style={{ display: "inline-block", margin: "0", cursor: "pointer" }}>{s.field}</p>
+                                </div>
+                            )
                         })}
                     </Col>
                 )

@@ -1,34 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Expert IDE
+In this IDE you can implement features requested by novices.
 
-## Getting Started
+<img src="public/fullUi.png" alt="drawing" width="1000"/>
 
-First, run the development server:
+## Device Panel
+The device panel shows the devices the novice wants you to program, and their corresponding fields.
+To get/set a value in the code, click the name of the field in the device panel.
 
-```bash
-npm run dev
-# or
-yarn dev
+## Video Panel
+The video panel shows a video recorded by novices, explaining their request to you. Feel free to play through as many times you like.
+
+## Export Panel
+Select the actions, triggers and comments you want to export to the novice.
+
+Press test to test the implementation.
+
+Press export to send the implementation. Any errors in the code will show in the debug panel.
+
+### Testing
+Actions can be tested before sending them to the novice.
+This feature is experimental, so it may not work.
+
+<img src="public/test.png" alt="drawing" width="600"/>
+
+
+## Editor
+
+### Trigger
+Triggers are conditions that causes actions to trigger. All triggers must eventually call trigger()
+
+Example:
+```
+const d = new Date()
+let time = d.getHours()
+if(CoffeeMachine.progress > 80 &&  SmartCurtain.folded === 0 && time > 7){
+  trigger()
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To allow users to chose from multiple different triggers, add a new trigger.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+### Action
+Actions are called when trigger() is called. Can be used to set values of actuators.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Example:
+```
+SmartCurtain.folded = 100;
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+To allow users to chose from multiple different triggers, add a new trigger.
 
-## Learn More
+### Comment
+Comments are your primary way to explain the feature to the novice.
+Try to remember they might not have any technical experience at all.
 
-To learn more about Next.js, take a look at the following resources:
+Example:
+```
+I made your kitchen light turn bright when your coffee machine is done.
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Multiple comments can be defined.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

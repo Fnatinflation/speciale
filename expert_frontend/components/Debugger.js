@@ -1,13 +1,30 @@
+import { useEffect, useRef } from "react";
+
+
 export default function Debugger(props) {
 
-    return (
-        < div style={{ height: "200px", overflow: "hidden" }} >
+    const messagesEndRef = useRef(null)
 
-            <div style={{ overflowY: "scroll" }}>
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [props.debugTexts]);
+
+    return (
+        < div style={{ padding: "10px", marginTop: "5px", height: "16vh", backgroundColor: "#151716", overflowY: "scroll" }} >
+
+            <div>
                 {
-                    props.debugTexts.map(d => {
+                    props.debugTexts.map((d, i) => {
                         return (
-                            <p style={{ padding: "0px", margin: "0px" }}>{d}</p>
+                            <div key={i}>
+                                <p style={{ fontSize: "12px", padding: "0px", margin: "0px", color: "white" }}>{d}</p>
+                                <div ref={messagesEndRef} />
+
+                            </div>
                         )
 
                     })

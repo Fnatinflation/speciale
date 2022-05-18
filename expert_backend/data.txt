@@ -1,0 +1,15 @@
+deploy1
+______________________
+type: trigger name: myTrigger
+trigger()
+ 
+type: comment name: myComment
+dinmor
+ 
+type: trigger name: skrt
+trigger()
+console.log("skrt")
+ 
+type: action name: myAction
+HueBulb.brightness = 10;
+ 
