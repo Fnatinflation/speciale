@@ -58,13 +58,17 @@ def setEffect():
     return r.json()[0]
 
 
+currentHue = 0
+
+
 @ app.route("/setHue")  # http://127.0.0.1:5000/setHue?value=0-65535
 def setHue():
+    global currentHue
     value = request.args.get('value', default=0, type=int)
 
     if(value == NULL or value < 0 or value > 65535):
         return 'Wrong input'
-
+    currentHue = value
     r = requests.put(
         url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"hue":' + str(value) + '}')
 
@@ -203,12 +207,13 @@ def pulse():
 
 
 def pulseLight():
+    global currentHue
     delay = 3
 
     t = threading.currentThread()
     while getattr(t, "activate", True):
         r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + ',"transitiontime":30}')
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + ',"transitiontime":30,"hue":'+str(currentHue)+'}')
         time.sleep(delay)
         r1 = requests.put(
             url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(0) + ',"transitiontime":30}')
@@ -245,7 +250,7 @@ def runBlink():
 
     while getattr(t, "activate", True):
         r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":0,"transitiontime":1}')
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":0,"transitiontime":1,"hue":'+str(currentHue)+'}')
         time.sleep(0.3)
         r = requests.put(
             url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":254,"transitiontime": 1}')
@@ -267,7 +272,7 @@ def normal():
 
     if testing == False:
         r = requests.put(
-            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + ',"hue":'+str(currentHue)+'}')
     return "normal light"
 
 
@@ -300,7 +305,7 @@ def runTestCt():
     shutOffAllThreads()
     testing = True
     for i in range(500, 153, -3):
-        r = requests.put(url=apiUrl, data='{"ct":'+str(i)+'}')
+        r = requests.put(url=apiUrl, data='{"ct":'+str(i)+',"bri":254}')
     for i in range(153, 500, 3):
         r = requests.put(url=apiUrl, data='{"ct":'+str(i)+'}')
     testing = False
@@ -319,7 +324,7 @@ def runTestHue():
     shutOffAllThreads()
     testing = True
     for i in range(0, 65535, 300):
-        r = requests.put(url=apiUrl, data='{"hue":'+str(i)+'}')
+        r = requests.put(url=apiUrl, data='{"hue":'+str(i)+',"bri":254}')
     testing = False
     runLastCalled()
 
