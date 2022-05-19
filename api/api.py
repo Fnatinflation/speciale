@@ -145,6 +145,14 @@ def allSensorInformation():
     return object
 
 
+@ app.route("/resettest")
+def resetTest():
+    #r = requests.get("http://192.168.0.123:4444/resettest")
+    r = requests.get("http://127.0.0.1:4444/resettest")
+
+    return str(r)
+
+
 @ app.route("/testdata", methods=["POST"])  # http://127.0.0.1:5000/testdata
 def test_data():
     req = request.get_json()
@@ -361,6 +369,7 @@ def runLastCalled():
         pulse()
     if lastCalled == "normal":
         normal()
+    resetTest()
 
 
 def shutOffAllThreads():
