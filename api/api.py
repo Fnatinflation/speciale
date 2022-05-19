@@ -295,8 +295,15 @@ def runTestBrightness():
     global testing
     shutOffAllThreads()
     testing = True
-    for i in range(254):
+    r = requests.put(url=apiUrl, data='{"bri":'+str(0)+'}')
+    time.sleep(0.5)
+    for i in range(0, 254, 3):
         r = requests.put(url=apiUrl, data='{"bri":'+str(i)+'}')
+    for i in range(254, 0, -3):
+        r = requests.put(url=apiUrl, data='{"bri":'+str(i)+'}')
+    r = requests.put(url=apiUrl, data='{"bri":254}')
+    time.sleep(0.5)
+
     testing = False
     runLastCalled()
 
@@ -331,7 +338,7 @@ def runTestHue():
     global testing
     shutOffAllThreads()
     testing = True
-    for i in range(0, 65535, 300):
+    for i in range(0, 65535, 500):
         r = requests.put(url=apiUrl, data='{"hue":'+str(i)+',"bri":254}')
     testing = False
     runLastCalled()
@@ -369,7 +376,7 @@ def runLastCalled():
         pulse()
     if lastCalled == "normal":
         normal()
-    resetTest()
+    # resetTest()
 
 
 def shutOffAllThreads():
