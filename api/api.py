@@ -176,31 +176,35 @@ def data_unity():
 
 
 globalThreads = []
+apiUrl = "http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state"
+testing = False
+lastCalled = NULL
 
 
 @ app.route("/pulse")
 def pulse():
+    global lastCalled
+    global testing
     pulseThread = threading.Thread(target=pulseLight)
 
+    lastCalled = "pulse"
     for t in globalThreads:
+        print("shutting off threads from pulse")
         if t.get("b"):
             t.get("b").activate = False
         if t.get("p"):
             t.get("p").activate = False
     pulseThread.activate = True
     globalThreads.append({"p": pulseThread})
-
-    pulseThread.start()
+    if testing == False:
+        pulseThread.start()
 
     return "now pulsing"
 
 
 def pulseLight():
     delay = 3
-    # global stop_threads
-    # stop_threads = True
-    # time.sleep(5)
-    # stop_threads = False
+
     t = threading.currentThread()
     while getattr(t, "activate", True):
         r = requests.put(
@@ -215,25 +219,28 @@ def pulseLight():
 
 @ app.route("/blink")
 def blink():
-
-    blinkThread = threading.Thread(target=blinkLight)
+    global testing
+    global lastCalled
+    lastCalled = "blink"
+    thread = threading.Thread(target=runBlink)
 
     for t in globalThreads:
+        print("shutting off threads from blink")
         if t.get("p"):
             t.get("p").activate = False
         if t.get("b"):
             t.get("b").activate = False
 
-    blinkThread.activate = True
-    globalThreads.append({"b": blinkThread})
+    thread.activate = True
+    globalThreads.append({"b": thread})
 
-    blinkThread.start()
+    if testing == False:
+        thread.start()
 
     return "now blinking"
 
 
-def blinkLight():
-
+def runBlink():
     t = threading.currentThread()
 
     while getattr(t, "activate", True):
@@ -249,17 +256,117 @@ def blinkLight():
 
 @ app.route("/normal")
 def normal():
+    global lastCalled
+    global testing
+    lastCalled = "normal"
     for t in globalThreads:
+        print("shutting off threads from normal")
         mT = list(t.items())[0][1]
         if mT:
             mT.activate = False
 
-    r = requests.put(
-        url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
+    if testing == False:
+        r = requests.put(
+            url='http://192.168.0.108/api/dpfYHD7aXhETTFOW7cafIgTrZskxuiJCJ3tPENkB/lights/16/state', data='{"bri":' + str(254) + '}')
     return "normal light"
 
 
-    # cd api; python api.py
+@ app.route("/testBri")
+def testBrightness():
+    t = threading.Thread(target=runTestBrightness)
+    t.start()
+    return 'brightness tested'
+
+
+def runTestBrightness():
+    global testing
+    shutOffAllThreads()
+    testing = True
+    for i in range(254):
+        r = requests.put(url=apiUrl, data='{"bri":'+str(i)+'}')
+    testing = False
+    runLastCalled()
+
+
+@ app.route("/testCt")
+def testCt():
+    t = threading.Thread(target=runTestCt)
+    t.start()
+    return 'ct tested'
+
+
+def runTestCt():
+    global testing
+    shutOffAllThreads()
+    testing = True
+    for i in range(500, 153, -3):
+        r = requests.put(url=apiUrl, data='{"ct":'+str(i)+'}')
+    for i in range(153, 500, 3):
+        r = requests.put(url=apiUrl, data='{"ct":'+str(i)+'}')
+    testing = False
+    runLastCalled()
+
+
+@ app.route("/testHue")
+def testHue():
+    t = threading.Thread(target=runTestHue)
+    t.start()
+    return 'hue tested'
+
+
+def runTestHue():
+    global testing
+    shutOffAllThreads()
+    testing = True
+    for i in range(0, 65535, 300):
+        r = requests.put(url=apiUrl, data='{"hue":'+str(i)+'}')
+    testing = False
+    runLastCalled()
+
+
+@ app.route("/testSwitch")
+def testSwitch():
+    t = threading.Thread(target=runTestSwitch)
+    t.start()
+    return 'on/off tested'
+
+
+def runTestSwitch():
+    global testing
+    shutOffAllThreads()
+
+    testing = True
+    r = requests.put(url=apiUrl, data='{"on":true,"bri":254}')
+    time.sleep(0.5)
+    r = requests.put(url=apiUrl, data='{"on":false}')
+    time.sleep(0.5)
+    r = requests.put(url=apiUrl, data='{"on":true}')
+    time.sleep(0.5)
+    r = requests.put(url=apiUrl, data='{"on":false}')
+    time.sleep(1)
+    r = requests.put(url=apiUrl, data='{"on":true}')
+    testing = False
+    runLastCalled()
+
+
+def runLastCalled():
+    if lastCalled == "blink":
+        blink()
+    if lastCalled == "pulse":
+        pulse()
+    if lastCalled == "normal":
+        normal()
+
+
+def shutOffAllThreads():
+    for t in globalThreads:
+        print("shutting off threads in test")
+        mT = list(t.items())[0][1]
+        if mT:
+            mT.activate = False
+
+
+# cd api; python api.py
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=False)
 
